@@ -176,7 +176,7 @@ public class SendRequestTask extends AsyncTask<Long, Void, SendRequestTask.Spitf
     public class SpitfirefoxCallback extends ClientCallback {
 
         private URI serviceURI;
-        private int retransmissionCounter;
+        private int retransmissionCounter; //TODO See how and where retransmit
         private long startTime;
         private boolean observationCancelled;
 

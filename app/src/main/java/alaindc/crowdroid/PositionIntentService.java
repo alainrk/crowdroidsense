@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -114,6 +115,10 @@ public class PositionIntentService extends IntentService implements GoogleApiCli
         editor.putString(Constants.PREF_LATITUDE, Double.toString(location.getLatitude()));
         editor.putString(Constants.PREF_LONGITUDE, Double.toString(location.getLongitude()));
         editor.commit();
+
+        // Update view sending a broadcast intent
+        Intent intent = new Intent(Constants.INTENT_UPDATE_POS);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
 

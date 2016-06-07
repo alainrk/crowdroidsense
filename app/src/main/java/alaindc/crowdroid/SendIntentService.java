@@ -78,8 +78,8 @@ public class SendIntentService extends IntentService {
 
     private void handleActionReceivedData(String response) {
         // Update view sending a broadcast intent
-        Intent intent = new Intent("receivedDataIntentActivity");
-        intent.putExtra("receivedDataFromServerExtra", response);
+        Intent intent = new Intent(Constants.INTENT_RECEIVED_DATA);
+        intent.putExtra(Constants.INTENT_RECEIVED_DATA_EXTRA_DATA, response);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
         // Set the alarms

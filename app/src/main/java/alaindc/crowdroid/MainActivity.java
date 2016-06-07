@@ -53,9 +53,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Intent serviceIntent = new Intent(getApplicationContext(), SendIntentService.class);
                 serviceIntent.setAction(SendIntentService.ACTION_SENDDATA);
                 getApplicationContext().startService(serviceIntent);
-
-                // TODO Debug REMOVEME and take it in broadcastreceiver like log
-                setLocationAndMap();
             }
         });
 
@@ -67,17 +64,24 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-
         BroadcastReceiver receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                String response = intent.getStringExtra("receivedDataFromServerExtra");
-                if (response != null)
-                    textView.append(response+"\n");
+                if (intent.getAction().equals(Constants.INTENT_RECEIVED_DATA)) {
+                    String response = intent.getStringExtra(Constants.INTENT_RECEIVED_DATA_EXTRA_DATA);
+                    if (response != null)
+                        textView.append(response+"\n");
+                } else if (intent.getAction().equals(Constants.INTENT_UPDATE_POS)) {
+                    setLocationAndMap();
+                }
             }
         };
-        LocalBroadcastManager.getInstance(this)
-                .registerReceiver(receiver, new IntentFilter("receivedDataIntentActivity"));
+
+        IntentFilter rcvDataIntFilter = new IntentFilter(Constants.INTENT_RECEIVED_DATA);
+        IntentFilter updatePosIntFilter = new IntentFilter(Constants.INTENT_UPDATE_POS);
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, rcvDataIntFilter);
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, updatePosIntFilter);
+
 
     }
 

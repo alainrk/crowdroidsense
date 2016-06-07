@@ -35,6 +35,12 @@ public class Constants {
     public static String PREF_LATITUDE = "CROWDROIDLATITUDE";
     public static String PREF_LONGITUDE = "CROWDROIDLONGITUDE";
 
+
+    public static String INTENT_RECEIVED_DATA = "INTENT_RECEIVED_DATA";
+    public static String INTENT_RECEIVED_DATA_EXTRA_DATA = "INTENT_RECEIVED_DATA_EXTRA_DATA";
+
+    public static String INTENT_UPDATE_POS = "INTENT_UPDATE_POS";
+
     /**
      * Used to set an expiration time for a geofence. After this amount of time Location Services
      * stops tracking the geofence.

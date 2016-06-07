@@ -38,7 +38,6 @@ public class SendIntentService extends IntentService {
 
     private static long POST = 2;
     private static CoapClient clientApplication;
-    private static GoogleApiClient mGoogleApiClient;
 
     public SendIntentService() {
         super("SendIntentService");

@@ -225,6 +225,7 @@ public class SendRequestTask extends AsyncTask<Long, Void, SendRequestTask.Spitf
 
         @Override
         public void processRetransmission(){
+            Log.d("SENDREQUESTTASK","Retransmission num. "+Integer.toString(retransmissionCounter++));
         }
 
         @Override

@@ -1,7 +1,13 @@
 package alaindc.crowdroid;
 
+import android.app.AlarmManager;
 import android.app.IntentService;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.SystemClock;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -14,12 +20,16 @@ import de.uzl.itm.ncoap.application.client.CoapClient;
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
  * a service on a separate handler thread.
- * <p/>
- * TODO: Customize class - update intent actions, extra parameters and static
- * helper methods.
  */
 public class PositionAndSenseIntentService extends IntentService {
-    // TODO: Rename actions, choose action names that describe tasks that this
+
+    // ALARMS!!!!
+    // https://developer.android.com/training/scheduling/alarms.html#type
+
+    // TODO Create an array of these to have multiple timers for multiple sensors sending
+    private AlarmManager alarmMgr;
+    private PendingIntent alarmIntent;
+
     // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
     public static final String ACTION_SENDDATA = "alaindc.crowdroid.action.ACTION_SENDDATA";
     public static final String ACTION_RECEIVEDDATA = "alaindc.crowdroid.action.ACTION_RECEIVEDDATA";
@@ -32,6 +42,16 @@ public class PositionAndSenseIntentService extends IntentService {
     public PositionAndSenseIntentService() {
         super("PositionAndSenseIntentService");
         clientApplication = new CoapClient();
+
+//        BroadcastReceiver receiver = new BroadcastReceiver() {
+//            @Override
+//            public void onReceive(Context context, Intent intent) {
+//                onHandleIntent(intent);
+//            }
+//        };
+//        LocalBroadcastManager.getInstance(this)
+//                .registerReceiver(receiver, IntentFilter.);
+
     }
 
     /**
@@ -83,9 +103,22 @@ public class PositionAndSenseIntentService extends IntentService {
      * parameters.
      */
     private void handleActionReceivedData(String response) {
+        // Update view sending a broadcast intent
         Intent intent = new Intent("receivedDataIntentActivity");
         intent.putExtra("receivedDataFromServerExtra", response);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+
+        // Set the alarms
+        alarmMgr = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+        Intent intentAlarm = new Intent(getApplicationContext(), PositionAndSenseIntentService.class);
+        intentAlarm.setAction(PositionAndSenseIntentService.ACTION_SENDDATA);
+        alarmIntent = PendingIntent.getService(getApplicationContext(), 0, intentAlarm, 0);
+
+        // TODO Set here time
+        int seconds = 3;
+        alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                SystemClock.elapsedRealtime() +
+                        seconds * 1000, alarmIntent);
     }
 
     private String getDate(long timestamp) {

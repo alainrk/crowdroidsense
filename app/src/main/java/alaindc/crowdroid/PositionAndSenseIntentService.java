@@ -91,7 +91,7 @@ public class PositionAndSenseIntentService extends IntentService {
         alarmIntent = PendingIntent.getService(getApplicationContext(), 0, intentAlarm, 0);
 
         // TODO Set here time
-        int seconds = 3;
+        int seconds = 999999;
         alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                 SystemClock.elapsedRealtime() +
                         seconds * 1000, alarmIntent);

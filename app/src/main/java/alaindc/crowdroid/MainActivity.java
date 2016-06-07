@@ -1,58 +1,54 @@
 package alaindc.crowdroid;
 
+/**
+ * Created by alain on 06/06/16.
+ */
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
-
-import java.net.URI;
-
-import de.uzl.itm.ncoap.application.client.CoapClient;
-import de.uzl.itm.ncoap.message.CoapMessage;
-import de.uzl.itm.ncoap.message.CoapResponse;
-import de.uzl.itm.ncoap.message.options.UintOptionValue;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
-    private static long POST = 2;
-    private CoapClient clientApplication;
     private Button button;
-
-    public CoapClient getClientApplication(){
-        return this.clientApplication;
-    }
+    private TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        this.clientApplication = new CoapClient();
+        textView = (TextView) findViewById(R.id.textView);
+        textView.setMovementMethod(new ScrollingMovementMethod());
 
         this.button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                new SendRequestTask(MainActivity.this, "Body test client android: ").execute(POST);
+                Intent serviceIntent = new Intent(getApplicationContext(), PositionAndSenseIntentService.class);
+                serviceIntent.setAction(PositionAndSenseIntentService.ACTION_SENDDATA);
+                getApplicationContext().startService(serviceIntent);
             }
         });
-    }
 
-    public void processResponse(final CoapResponse coapResponse, final URI serviceURI, final long duration) {
 
-        runOnUiThread(new Runnable() {
+        BroadcastReceiver receiver = new BroadcastReceiver() {
             @Override
-            public void run() {
-                long block2Num = coapResponse.getBlock2Number();
-                String text = "Response received";
-                if (block2Num != UintOptionValue.UNDEFINED) {
-                    text += " (" + block2Num + " blocks in " + duration + " ms)";
-                } else {
-                    text += " (after " + duration + " ms)";
-                }
-
-                Toast.makeText(MainActivity.this, coapResponse.getContent().toString(CoapMessage.CHARSET), Toast.LENGTH_LONG).show();
+            public void onReceive(Context context, Intent intent) {
+                String response = intent.getStringExtra("receivedDataFromServerExtra");
+                if (response != null)
+                    textView.append(response+"\n");
             }
-        });
+        };
+        LocalBroadcastManager.getInstance(this)
+                .registerReceiver(receiver, new IntentFilter("receivedDataIntentActivity"));
+
     }
 
 }

@@ -1,10 +1,13 @@
 package alaindc.crowdroid;
 
 /**
- * Created by narko on 06/06/16.
+ * Created by alain on 06/06/16.
  */
 
+import android.app.IntentService;
+import android.content.Intent;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.net.InetAddress;
@@ -21,43 +24,14 @@ import de.uzl.itm.ncoap.message.MessageType;
 
 public class SendRequestTask extends AsyncTask<Long, Void, SendRequestTask.SpitfirefoxCallback> {
 
-    //    private ProgressDialog progressDialog;
-    private MainActivity activity;
     private CoapClient coapClient;
-
-    private String serverName, localUri, acceptedFormats, payloadFormat, payload, ifMatch, etags;
-    private int portNumber;
-    private boolean confirmable, observe;
-    private BlockSize block1Size, block2Size;
-
+    private IntentService intentService;
     private String bodytext;
 
-    public SendRequestTask(MainActivity activity, String bodytext){
-        this.activity = activity;
-        this.coapClient = activity.getClientApplication();
+    public SendRequestTask(CoapClient coapClient, IntentService intentService, String bodytext){
+        this.coapClient = coapClient;
         this.bodytext = bodytext;
-//        this.progressDialog = new ProgressDialog(this.activity);
-    }
-
-
-    @Override
-    protected void onPreExecute(){
-
-        this.serverName = "melot.cs.unibo.it";//"192.168.1.112";
-
-        this.portNumber = 5683;
-
-        this.localUri = "/myresp";
-        this.confirmable = true;
-        this.observe = false;
-        this.acceptedFormats = "";
-        this.payloadFormat = "0";
-        this.payload = bodytext;
-        this.ifMatch = "";
-        this.etags = "";
-
-        this.block2Size = this.getBlock2Size();
-        this.block1Size = this.getBlock1Size();
+        this.intentService = intentService;
     }
 
     private BlockSize getBlock2Size() {
@@ -100,14 +74,28 @@ public class SendRequestTask extends AsyncTask<Long, Void, SendRequestTask.Spitf
     }
 
     @Override
-    protected void onPostExecute(SpitfirefoxCallback clientCallback){
-    }
-
-    @Override
     protected SpitfirefoxCallback doInBackground(Long... method){
+
+        String serverName, localUri, acceptedFormats, payloadFormat, payload, ifMatch, etags;
+        int portNumber;
+        boolean confirmable, observe;
+        BlockSize block1Size, block2Size;
+
+        serverName = "melot.cs.unibo.it";//"192.168.1.112";
+        portNumber = 5683;
+        localUri = "/myresp";
+        confirmable = true;
+        observe = false;
+        acceptedFormats = "";
+        payloadFormat = "0";
+        payload = bodytext;
+        ifMatch = "";
+        etags = "";
+        block2Size = this.getBlock2Size();
+        block1Size = this.getBlock1Size();
+
         try{
             if("".equals(serverName)) {
-                showLongToast("Enter Server (Host or IP)");
                 return null;
             }
 
@@ -124,32 +112,28 @@ public class SendRequestTask extends AsyncTask<Long, Void, SendRequestTask.Spitf
 
             //Set if-match option values (if any)
             try {
-                coapRequest.setIfMatch(getOpaqueOptionValues(this.ifMatch));
+                coapRequest.setIfMatch(getOpaqueOptionValues(ifMatch));
             } catch (IllegalArgumentException ex) {
-                showLongToast("Malformed IF-MATCH: " + ex.getMessage());
                 return null;
             }
 
             //Set etag option values (if any)
             try {
-                coapRequest.setEtags(getOpaqueOptionValues(this.etags));
+                coapRequest.setEtags(getOpaqueOptionValues(etags));
             } catch (IllegalArgumentException ex) {
-                showLongToast("Malformed ETAG: " + ex.getMessage());
                 return null;
             }
 
             //Set observe option (for GET only)
             if(observe && method[0] != 1) {
-//                this.progressDialog.dismiss();
-                showLongToast("Use GET for observation!");
                 return null;
             } else if (observe) {
                 coapRequest.setObserve(0);
             }
 
             //Set accept option values in request (if any)
-            if(!("".equals(this.acceptedFormats))){
-                String[] array = this.acceptedFormats.split(";");
+            if(!("".equals(acceptedFormats))){
+                String[] array = acceptedFormats.split(";");
                 long[] acceptOptionValues = new long[array.length];
                 for(int i = 0; i < acceptOptionValues.length; i++) {
                     if(!("".equals(array[i]))) {
@@ -160,17 +144,16 @@ public class SendRequestTask extends AsyncTask<Long, Void, SendRequestTask.Spitf
             }
 
             //Set block options (if any)
-            if(BlockSize.UNBOUND != this.block1Size) {
-                coapRequest.setPreferredBlock1Size(this.block1Size);
+            if(BlockSize.UNBOUND != block1Size) {
+                coapRequest.setPreferredBlock1Size(block1Size);
             }
 
-            if(BlockSize.UNBOUND != this.block2Size) {
-                coapRequest.setPreferredBlock2Size(this.block2Size);
+            if(BlockSize.UNBOUND != block2Size) {
+                coapRequest.setPreferredBlock2Size(block2Size);
             }
 
             //Set payload and payload related options in request (if any)
-            if(!("".equals(this.payload)) && "".equals(this.payloadFormat)){
-                showLongToast("No Content Type for payload defined!");
+            if(!("".equals(payload)) && "".equals(payloadFormat)){
                 return null;
             } else if (!("".equals(payloadFormat))){
                 coapRequest.setContent(payload.getBytes(CoapMessage.CHARSET), Long.valueOf(payloadFormat));
@@ -189,17 +172,6 @@ public class SendRequestTask extends AsyncTask<Long, Void, SendRequestTask.Spitf
             return null;
         }
     }
-
-
-    private void showLongToast(final String text){
-        activity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(activity, text, Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
 
     public class SpitfirefoxCallback extends ClientCallback {
 
@@ -223,9 +195,13 @@ public class SendRequestTask extends AsyncTask<Long, Void, SendRequestTask.Spitf
             ///////////////////////  CHIAMATA FONDAMENTALE ///////////////////////
             /////////////////////////////////////////////////////////////////////
 
-            // Invece di passare la activity posso farmi passare il server responsabile e chiamare
-            // una sua funzione per regolare i timeout, il geofencing e cazzi vari
-            activity.processResponse(coapResponse, this.serviceURI, duration);
+            String text = coapResponse.getContent().toString(CoapMessage.CHARSET);
+            Log.d("SENDREQUESTTASK",text);
+
+            Intent serviceIntent = new Intent(intentService.getApplicationContext(), PositionAndSenseIntentService.class);
+            serviceIntent.setAction(PositionAndSenseIntentService.ACTION_RECEIVEDDATA);
+            serviceIntent.putExtra(PositionAndSenseIntentService.EXTRA_RESPONSE, text);
+            intentService.getApplicationContext().startService(serviceIntent);
 
             /////////////////////////////////////////////////////////////////////
             /////////////////////////////////////////////////////////////////////
@@ -233,39 +209,26 @@ public class SendRequestTask extends AsyncTask<Long, Void, SendRequestTask.Spitf
 
         @Override
         public void processEmptyAcknowledgement(){
-            showLongToast("Empty ACK received!");
         }
 
         @Override
         public void processReset(){
-//            progressDialog.dismiss();
-            showLongToast("RST received from Server!");
         }
 
         @Override
         public void processTransmissionTimeout(){
-//            progressDialog.dismiss();
-            showLongToast("Transmission timed out!");
         }
 
         @Override
         public void processResponseBlockReceived(final long receivedLength, final long expectedLength) {
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    String expected = expectedLength == -1 ? "UNKNOWN" : ("" + expectedLength);
-                }
-            });
         }
 
         @Override
         public void processRetransmission(){
-            showLongToast("Retransmission No. " + (retransmissionCounter++));
         }
 
         @Override
         public void processMiscellaneousError(final String description) {
-            showLongToast("ERROR: " + description + "!");
         }
 
         public void cancelObservation(){

@@ -8,7 +8,6 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -198,9 +197,9 @@ public class SendRequestTask extends AsyncTask<Long, Void, SendRequestTask.Spitf
             String text = coapResponse.getContent().toString(CoapMessage.CHARSET);
             Log.d("SENDREQUESTTASK",text);
 
-            Intent serviceIntent = new Intent(intentService.getApplicationContext(), PositionAndSenseIntentService.class);
-            serviceIntent.setAction(PositionAndSenseIntentService.ACTION_RECEIVEDDATA);
-            serviceIntent.putExtra(PositionAndSenseIntentService.EXTRA_RESPONSE, text);
+            Intent serviceIntent = new Intent(intentService.getApplicationContext(), SendIntentService.class);
+            serviceIntent.setAction(SendIntentService.ACTION_RECEIVEDDATA);
+            serviceIntent.putExtra(SendIntentService.EXTRA_RESPONSE, text);
             intentService.getApplicationContext().startService(serviceIntent);
 
             /////////////////////////////////////////////////////////////////////

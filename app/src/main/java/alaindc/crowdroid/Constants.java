@@ -10,12 +10,7 @@ import com.google.android.gms.location.GeofenceStatusCodes;
  */
 public class Constants {
 
-    public static final String PREF_FILE = "GEOSPOTPREF";
-    public static final String PREF_RESPONSE = "RESPONSE";
     public static final String PACKAGE_NAME_ACT = "com.google.android.gms.location.activityrecognition";
-    public static final String BROADCAST_ACTION = PACKAGE_NAME_ACT + ".BROADCAST_ACTION";
-    public static final String ACTIVITY_EXTRA = PACKAGE_NAME_ACT + ".ACTIVITY_EXTRA";
-    public static final String SHARED_PREFERENCES_NAME = PACKAGE_NAME_ACT + ".SHARED_PREFERENCES";
 
     public static String getErrorString(Context context, int errorCode) {
         Resources mResources = context.getResources();
@@ -31,21 +26,14 @@ public class Constants {
         }
     }
 
-    public static final int SUCCESS_RESULT = 0;
-    public static final int FAILURE_RESULT = 1;
-    public static final String PACKAGE_NAME_LOC = "com.google.android.gms.location.sample.locationaddress";
-    public static final String RECEIVER = PACKAGE_NAME_LOC + ".RECEIVER";
-    public static final String RESULT_DATA_KEY = PACKAGE_NAME_LOC + ".RESULT_DATA_KEY";
-    public static final String LOCATION_DATA_EXTRA = PACKAGE_NAME_LOC + ".LOCATION_DATA_EXTRA";
+    // Location updates intervals in sec
+    public static int UPDATE_INTERVAL = 10000; // 10 sec
+    public static int FATEST_INTERVAL = 5000; // 5 sec
+    public static int DISPLACEMENT = 10; // 10 meters
 
-
-
-    final static int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 90;
-
-    public static final String PACKAGE_NAME = "com.google.android.gms.location.Geofence";
-
-
-    public static final String GEOFENCES_ADDED_KEY = PACKAGE_NAME + ".GEOFENCES_ADDED_KEY";
+    public static String PREF_FILE = "CROWDROIDSHAREDPREFERENCESFILE";
+    public static String PREF_LATITUDE = "CROWDROIDLATITUDE";
+    public static String PREF_LONGITUDE = "CROWDROIDLONGITUDE";
 
     /**
      * Used to set an expiration time for a geofence. After this amount of time Location Services

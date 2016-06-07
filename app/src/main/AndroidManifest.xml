@@ -3,8 +3,8 @@
     package="alaindc.crowdroid">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -12,7 +12,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
@@ -26,7 +25,7 @@
         </activity>
 
         <receiver
-            android:name="alaindc.crowdroid.SensAndSendBcastRcv"
+            android:name=".SensAndSendBcastRcv"
             android:enabled="true"
             android:exported="false">
             <intent-filter>
@@ -34,17 +33,22 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_REPLACED" />
+
                 <data android:scheme="package" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED" />
+
                 <data android:scheme="package" />
             </intent-filter>
         </receiver>
 
         <service
-            android:name=".PositionAndSenseIntentService"
-            android:exported="false"/>
+            android:name=".SendIntentService"
+            android:exported="false" />
+        <service
+            android:name=".PositionIntentService"
+            android:exported="false"></service>
     </application>
 
 </manifest>

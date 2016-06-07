@@ -3,10 +3,8 @@ package alaindc.crowdroid;
 import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.SystemClock;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.format.DateFormat;
@@ -23,7 +21,7 @@ import de.uzl.itm.ncoap.application.client.CoapClient;
  * An {@link IntentService} subclass for handling asynchronous task requests in
  * a service on a separate handler thread.
  */
-public class PositionAndSenseIntentService extends IntentService {
+public class SendIntentService extends IntentService {
 
     // ALARMS!!!!
     // https://developer.android.com/training/scheduling/alarms.html#type
@@ -42,8 +40,8 @@ public class PositionAndSenseIntentService extends IntentService {
     private static CoapClient clientApplication;
     private static GoogleApiClient mGoogleApiClient;
 
-    public PositionAndSenseIntentService() {
-        super("PositionAndSenseIntentService");
+    public SendIntentService() {
+        super("SendIntentService");
     }
 
     @Override
@@ -74,6 +72,7 @@ public class PositionAndSenseIntentService extends IntentService {
         Long tsLong = System.currentTimeMillis();
         String timestamp = tsLong.toString();
         String date = getDate(tsLong);
+
         SendRequestTask sendreq = new SendRequestTask(clientApplication, this, "Body test client android: "+date);
         ClientCallback clientCallback = sendreq.doInBackground(POST);
     }
@@ -86,8 +85,8 @@ public class PositionAndSenseIntentService extends IntentService {
 
         // Set the alarms
         alarmMgr = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-        Intent intentAlarm = new Intent(getApplicationContext(), PositionAndSenseIntentService.class);
-        intentAlarm.setAction(PositionAndSenseIntentService.ACTION_SENDDATA);
+        Intent intentAlarm = new Intent(getApplicationContext(), SendIntentService.class);
+        intentAlarm.setAction(SendIntentService.ACTION_SENDDATA);
         alarmIntent = PendingIntent.getService(getApplicationContext(), 0, intentAlarm, 0);
 
         // TODO Set here time

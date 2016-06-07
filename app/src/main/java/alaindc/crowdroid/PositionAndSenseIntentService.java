@@ -12,6 +12,8 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.format.DateFormat;
 import android.util.Log;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+
 import java.util.Calendar;
 
 import de.uzl.itm.ncoap.application.client.ClientCallback;
@@ -38,36 +40,17 @@ public class PositionAndSenseIntentService extends IntentService {
 
     private static long POST = 2;
     private static CoapClient clientApplication;
+    private static GoogleApiClient mGoogleApiClient;
 
     public PositionAndSenseIntentService() {
         super("PositionAndSenseIntentService");
-        clientApplication = new CoapClient();
-
-//        BroadcastReceiver receiver = new BroadcastReceiver() {
-//            @Override
-//            public void onReceive(Context context, Intent intent) {
-//                onHandleIntent(intent);
-//            }
-//        };
-//        LocalBroadcastManager.getInstance(this)
-//                .registerReceiver(receiver, IntentFilter.);
-
     }
 
-    /**
-     * Starts this service to perform action Baz with the given parameters. If
-     * the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
-    // TODO: Customize helper method
-//    public static void startActionBaz(Context context, String param1, String param2) {
-//        Intent intent = new Intent(context, PositionAndSenseIntentService.class);
-//        intent.setAction(ACTION_BAZ);
-//        intent.putExtra(EXTRA_PARAM1, param1);
-//        intent.putExtra(EXTRA_PARAM2, param2);
-//        context.startService(intent);
-//    }
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        clientApplication = new CoapClient();
+    }
 
     @Override
     protected void onHandleIntent(Intent intent) {
@@ -86,10 +69,7 @@ public class PositionAndSenseIntentService extends IntentService {
         }
     }
 
-    /**
-     * Handle action Foo in the provided background thread with the provided
-     * parameters.
-     */
+    // TODO REMOVEME Debug purpose
     private void handleActionSendData() {
         Long tsLong = System.currentTimeMillis();
         String timestamp = tsLong.toString();
@@ -98,10 +78,6 @@ public class PositionAndSenseIntentService extends IntentService {
         ClientCallback clientCallback = sendreq.doInBackground(POST);
     }
 
-    /**
-     * Handle action Baz in the provided background thread with the provided
-     * parameters.
-     */
     private void handleActionReceivedData(String response) {
         // Update view sending a broadcast intent
         Intent intent = new Intent("receivedDataIntentActivity");

@@ -51,12 +51,14 @@ public class Constants {
     public static String ACTION_RECEIVEDDATA = "ACTION_RECEIVEDDATA";
     public static String EXTRA_RESPONSE = "EXTRA_RESPONSE";
 
+    public static String EXTRA_TYPE_OF_SENSOR_TO_SEND = "EXTRA_TYPE_OF_SENSOR_TO_SEND";
+
     public static String PREF_FILE = "CROWDROIDSHAREDPREFERENCESFILE";
+
     public static String PREF_LATITUDE = "CROWDROIDLATITUDE";
     public static String PREF_LONGITUDE = "CROWDROIDLONGITUDE";
     public static String PREF_AMPLITUDE = "CROWDROIDAMPLITUDE";
-
-    public static String PREF_SENSOR = "CROWDROIDSENSOR_";
+    public static String PREF_SENSOR_ = "CROWDROIDSENSOR_";
 
     public static String INTENT_RECEIVED_DATA = "INTENT_RECEIVED_DATA";
     public static String INTENT_RECEIVED_DATA_EXTRA_DATA = "INTENT_RECEIVED_DATA_EXTRA_DATA";

@@ -11,7 +11,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.SystemClock;
-import android.support.annotation.FloatRange;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -52,7 +51,6 @@ public class SensorsIntentService extends IntentService implements SensorEventLi
             }
 
             if (action.equals(Constants.INTENT_RECEIVED_AMPLITUDE)){
-//                double amplitude = Double.parseDouble(intent.getStringExtra(Constants.EXTRA_AMPLITUDE));
                 double amplitude = intent.getDoubleExtra(Constants.EXTRA_AMPLITUDE,-1);
 
                 if (amplitude > 0) {
@@ -94,7 +92,7 @@ public class SensorsIntentService extends IntentService implements SensorEventLi
 
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(Constants.PREF_FILE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putFloat(Constants.PREF_SENSOR+event.sensor.getType(), event.values[0]);
+        editor.putString(Constants.PREF_SENSOR_ +event.sensor.getType(), Float.toString(event.values[0]));
         editor.commit();
 
         // Update view

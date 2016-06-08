@@ -5,6 +5,7 @@ import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.SystemClock;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.format.DateFormat;
@@ -48,7 +49,7 @@ public class SendIntentService extends IntentService {
         if (intent != null) {
             final String action = intent.getAction();
             if (Constants.ACTION_SENDDATA.equals(action)) {
-                handleActionSendData();
+                handleActionSendData(intent.getStringExtra(Constants.EXTRA_TYPE_OF_SENSOR_TO_SEND)); // Name in shared preference
             } else if (Constants.ACTION_RECEIVEDDATA.equals(action)) {
                 final String response = intent.getStringExtra(Constants.EXTRA_RESPONSE);
                 handleActionReceivedData(response);
@@ -57,12 +58,17 @@ public class SendIntentService extends IntentService {
     }
 
     // TODO REMOVEME Debug purpose
-    private void handleActionSendData() {
+    private void handleActionSendData(String typeOfSensorToSend) {
         Long tsLong = System.currentTimeMillis();
         String timestamp = tsLong.toString();
         String date = getDate(tsLong);
 
-        SendRequestTask sendreq = new SendRequestTask(clientApplication, this, "Body test client android: "+date);
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(Constants.PREF_FILE,Context.MODE_PRIVATE);
+        String longitude = sharedPref.getString(Constants.PREF_LONGITUDE,"-1");
+        String latitude = sharedPref.getString(Constants.PREF_LATITUDE,"-1");
+        String sensordata = sharedPref.getString(typeOfSensorToSend, "-1");
+
+        SendRequestTask sendreq = new SendRequestTask(clientApplication, this, date+", "+latitude+", "+longitude+" Sensor "+typeOfSensorToSend+": "+sensordata);
         ClientCallback clientCallback = sendreq.doInBackground(POST);
     }
 
@@ -76,6 +82,7 @@ public class SendIntentService extends IntentService {
         alarmMgr = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
         Intent intentAlarm = new Intent(getApplicationContext(), SendIntentService.class);
         intentAlarm.setAction(Constants.ACTION_SENDDATA);
+        intentAlarm.putExtra(Constants.EXTRA_TYPE_OF_SENSOR_TO_SEND, ""); // TODO Here set wich sensor to send after time
         alarmIntent = PendingIntent.getService(getApplicationContext(), 0, intentAlarm, 0);
 
         // TODO Set here time

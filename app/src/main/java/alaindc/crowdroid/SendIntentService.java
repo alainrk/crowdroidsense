@@ -51,10 +51,6 @@ public class SendIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.d("POSSENSEINTENTSERVICE: ","onHandleIntent!!!!!");
-
-//        new SendRequestTask(clientApplication, "Body test client android: ").doInBackground(POST);
-
         if (intent != null) {
             final String action = intent.getAction();
             if (ACTION_SENDDATA.equals(action)) {

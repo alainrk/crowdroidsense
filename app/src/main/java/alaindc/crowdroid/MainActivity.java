@@ -11,13 +11,17 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 
 import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -27,6 +31,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -50,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         this.button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                // Start sending messages to server
                 Intent serviceIntent = new Intent(getApplicationContext(), SendIntentService.class);
                 serviceIntent.setAction(SendIntentService.ACTION_SENDDATA);
                 getApplicationContext().startService(serviceIntent);
@@ -59,8 +66,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         this.buttonLoc = (Button) findViewById(R.id.buttonLoc);
         buttonLoc.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                // Start intent service for update position
                 Intent posintent = new Intent(getApplicationContext(), PositionIntentService.class);
                 getApplicationContext().startService(posintent);
+
+                // Start intent service for update sensors
+                Intent sensorintent = new Intent(getApplicationContext(), SensorsIntentService.class);
+                sensorintent.setAction(Constants.INTENT_START_SENSORS);
+                getApplicationContext().startService(sensorintent);
+
+                // Start intent service for update amplitude sensing
+                Intent amplintent = new Intent(getApplicationContext(), SensorsIntentService.class);
+                amplintent.setAction(Constants.INTENT_START_AUDIOAMPLITUDE_SENSE);
+                getApplicationContext().startService(amplintent);
             }
         });
 
@@ -73,14 +91,26 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         textView.append(response+"\n");
                 } else if (intent.getAction().equals(Constants.INTENT_UPDATE_POS)) {
                     setLocationAndMap();
+                } else if (intent.getAction().equals(Constants.INTENT_UPDATE_AMPLITUDE)) {
+                    String response = intent.getStringExtra(Constants.INTENT_RECEIVED_DATA_EXTRA_DATA);
+                    if (response != null)
+                        textView.append(response+"\n");
+                } else if (intent.getAction().equals(Constants.INTENT_UPDATE_SENSORS)) {
+                    String response = intent.getStringExtra(Constants.INTENT_RECEIVED_DATA_EXTRA_DATA);
+                    if (response != null)
+                        textView.append(response+"\n");
                 }
             }
         };
 
         IntentFilter rcvDataIntFilter = new IntentFilter(Constants.INTENT_RECEIVED_DATA);
         IntentFilter updatePosIntFilter = new IntentFilter(Constants.INTENT_UPDATE_POS);
+        IntentFilter updateSenseIntFilter = new IntentFilter(Constants.INTENT_UPDATE_SENSORS);
+        IntentFilter updateAmplIntFilter = new IntentFilter(Constants.INTENT_UPDATE_AMPLITUDE);
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, rcvDataIntFilter);
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, updatePosIntFilter);
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, updateSenseIntFilter);
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, updateAmplIntFilter);
 
 
     }

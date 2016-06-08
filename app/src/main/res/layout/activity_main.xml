@@ -29,14 +29,14 @@ android:weightSum="2">
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Location"
+            android:text="Start Services"
             android:id="@+id/buttonLoc"
             android:layout_weight="1.05" />
 
         <Button
             android:layout_width="204dp"
             android:layout_height="wrap_content"
-            android:text="START"
+            android:text="START request"
             android:id="@+id/button" />
     </LinearLayout>
 
@@ -46,6 +46,7 @@ android:weightSum="2">
         android:id="@+id/textView"
         android:layout_gravity="center_horizontal"
         android:layout_weight="0.95"
-        android:padding="1dp"/>
+        android:padding="1dp"
+        android:gravity="bottom"/>
 
 </LinearLayout>

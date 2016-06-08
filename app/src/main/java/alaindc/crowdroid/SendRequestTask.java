@@ -198,8 +198,8 @@ public class SendRequestTask extends AsyncTask<Long, Void, SendRequestTask.Spitf
             Log.d("SENDREQUESTTASK",text);
 
             Intent serviceIntent = new Intent(intentService.getApplicationContext(), SendIntentService.class);
-            serviceIntent.setAction(SendIntentService.ACTION_RECEIVEDDATA);
-            serviceIntent.putExtra(SendIntentService.EXTRA_RESPONSE, text);
+            serviceIntent.setAction(Constants.ACTION_RECEIVEDDATA);
+            serviceIntent.putExtra(Constants.EXTRA_RESPONSE, text);
             intentService.getApplicationContext().startService(serviceIntent);
 
             /////////////////////////////////////////////////////////////////////

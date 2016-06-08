@@ -47,6 +47,10 @@ public class Constants {
     public static int FATEST_INTERVAL = 5000; // 5 sec
     public static int DISPLACEMENT = 10; // 10 meters
 
+    public static String ACTION_SENDDATA = "ACTION_SENDDATA";
+    public static String ACTION_RECEIVEDDATA = "ACTION_RECEIVEDDATA";
+    public static String EXTRA_RESPONSE = "EXTRA_RESPONSE";
+
     public static String PREF_FILE = "CROWDROIDSHAREDPREFERENCESFILE";
     public static String PREF_LATITUDE = "CROWDROIDLATITUDE";
     public static String PREF_LONGITUDE = "CROWDROIDLONGITUDE";

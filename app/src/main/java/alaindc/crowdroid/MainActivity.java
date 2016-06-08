@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onClick(View v) {
                 // Start sending messages to server
                 Intent serviceIntent = new Intent(getApplicationContext(), SendIntentService.class);
-                serviceIntent.setAction(SendIntentService.ACTION_SENDDATA);
+                serviceIntent.setAction(Constants.ACTION_SENDDATA);
                 getApplicationContext().startService(serviceIntent);
             }
         });

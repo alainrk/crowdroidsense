@@ -30,12 +30,6 @@ public class SendIntentService extends IntentService {
     private AlarmManager alarmMgr;
     private PendingIntent alarmIntent;
 
-    // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
-    public static final String ACTION_SENDDATA = "alaindc.crowdroid.action.ACTION_SENDDATA";
-    public static final String ACTION_RECEIVEDDATA = "alaindc.crowdroid.action.ACTION_RECEIVEDDATA";
-
-    public static final String EXTRA_RESPONSE = "alaindc.crowdroid.extras.EXTRA_RESPONSE";
-
     private static long POST = 2;
     private static CoapClient clientApplication;
 
@@ -53,10 +47,10 @@ public class SendIntentService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
             final String action = intent.getAction();
-            if (ACTION_SENDDATA.equals(action)) {
+            if (Constants.ACTION_SENDDATA.equals(action)) {
                 handleActionSendData();
-            } else if (ACTION_RECEIVEDDATA.equals(action)) {
-                final String response = intent.getStringExtra(EXTRA_RESPONSE);
+            } else if (Constants.ACTION_RECEIVEDDATA.equals(action)) {
+                final String response = intent.getStringExtra(Constants.EXTRA_RESPONSE);
                 handleActionReceivedData(response);
             }
         }
@@ -81,7 +75,7 @@ public class SendIntentService extends IntentService {
         // Set the alarms
         alarmMgr = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
         Intent intentAlarm = new Intent(getApplicationContext(), SendIntentService.class);
-        intentAlarm.setAction(SendIntentService.ACTION_SENDDATA);
+        intentAlarm.setAction(Constants.ACTION_SENDDATA);
         alarmIntent = PendingIntent.getService(getApplicationContext(), 0, intentAlarm, 0);
 
         // TODO Set here time

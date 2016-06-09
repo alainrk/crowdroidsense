@@ -11,17 +11,14 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 
 import android.content.pm.PackageManager;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
+import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -29,10 +26,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-
-import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -156,9 +152,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 //                .strokeWidth(7)
 //                .fillColor(Color.argb( 60,238, 32, 32))
 //                .strokeColor(Color.argb( 255,238, 32, 32))
-//                .radius(jsonSingle.getInt("r")); // In meters
-//
-//        // Get back the mutable Circle
+//                .radius(10); // In meters
+
+        // Get back the mutable Circle
 //        mMap.addCircle(circleOptions);
 
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(target, cameraZoom);

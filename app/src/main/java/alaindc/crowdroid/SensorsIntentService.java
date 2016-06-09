@@ -14,18 +14,29 @@ import android.os.SystemClock;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import java.sql.Time;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class SensorsIntentService extends IntentService implements SensorEventListener {
 
     private SensorManager mSensorManager;
     private GetAmplitudeTask amplitudeTask;
 
+//    private ArrayList<AlarmManager> alarmMgr;
+//    private ArrayList<PendingIntent> alarmIntent;
+
     private AlarmManager alarmMgr;
     private PendingIntent alarmIntent;
 
+    private Random random;
+
     public SensorsIntentService() {
         super("SensorsIntentService");
+//        alarmMgr = new ArrayList<>(Constants.MONITORED_SENSORS.length);
+//        alarmIntent = new ArrayList<>(Constants.MONITORED_SENSORS.length);
+        random = new Random(System.currentTimeMillis());
     }
 
     @Override
@@ -42,6 +53,11 @@ public class SensorsIntentService extends IntentService implements SensorEventLi
                     if (Constants.isInMonitoredSensors(sensor.getType()))
                         mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
                 }
+
+                for (int type: Constants.STUBBED_MONITORED_SENSORS) {
+                    stub_onSensorChanged(type);
+                }
+
             }
 
             if (action.equals(Constants.INTENT_START_AUDIOAMPLITUDE_SENSE)){
@@ -50,6 +66,11 @@ public class SensorsIntentService extends IntentService implements SensorEventLi
                 amplitudeTask.getData();
             }
 
+            if (action.equals(Constants.INTENT_STUB_SENSOR_CHANGED)) {
+                stub_onSensorChanged(intent.getIntExtra(Constants.INTENT_STUB_SENSOR_CHANGED_TYPE, -1));
+            }
+
+            // TODO Accorpare in modo generico con gli altri sensori (praticamente stub)
             if (action.equals(Constants.INTENT_RECEIVED_AMPLITUDE)){
                 double amplitude = intent.getDoubleExtra(Constants.EXTRA_AMPLITUDE,-1);
 
@@ -81,13 +102,52 @@ public class SensorsIntentService extends IntentService implements SensorEventLi
         }
     }
 
-    public final void onAccuracyChanged(Sensor sensor, int accuracy) {
+    ////////////////////////////////////////////////////////////////////////////////
+    ///////////////////// STUB IN SUBSTITUTION OF REAL SENSORS /////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
+
+    public void stub_onSensorChanged(int typeSensor) {
+        if (typeSensor < 0)
+            return;
+
+        // Random value
+        float value = random.nextFloat();
+
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(Constants.PREF_FILE, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(Constants.PREF_SENSOR_ + typeSensor, Float.toString(value));
+        editor.commit();
+
+        // Update view
+        Intent senseintent = new Intent(Constants.INTENT_UPDATE_SENSORS);
+        senseintent.putExtra(Constants.INTENT_RECEIVED_DATA_EXTRA_DATA, "Sensor " + Constants.getNameOfSensor(typeSensor) + " value: " + Float.toString(value));
+        LocalBroadcastManager.getInstance(this).sendBroadcast(senseintent);
+
+        // Set the alarm random
+//        alarmMgr[Constants.getIndexAlarmForSensor(typeSensor)] = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+        alarmMgr = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+        Intent intentAlarm = new Intent(getApplicationContext(), SensorsIntentService.class);
+        intentAlarm.setAction(Constants.INTENT_STUB_SENSOR_CHANGED);
+        intentAlarm.putExtra(Constants.INTENT_STUB_SENSOR_CHANGED_TYPE, typeSensor);
+//        alarmIntent[Constants.getIndexAlarmForSensor(typeSensor)] = PendingIntent.getService(getApplicationContext(), 0, intentAlarm, 0);
+        alarmIntent = PendingIntent.getService(getApplicationContext(), 0, intentAlarm, 0);
+
+        // Random seconds
+        int seconds = random.nextInt(5) + 1;
+        alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                SystemClock.elapsedRealtime() +
+                        seconds * 1000, alarmIntent);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
+
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
         // Do something here if sensor accuracy changes.
         Log.d("SENSORS_INTENTSERVICE", sensor.toString());
     }
 
     public final void onSensorChanged(SensorEvent event) {
-        //float millibars_of_pressure = event.values[0];
         Log.d("SENSORS_INTENTSERVICE", event.toString());
 
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(Constants.PREF_FILE, Context.MODE_PRIVATE);
@@ -97,7 +157,7 @@ public class SensorsIntentService extends IntentService implements SensorEventLi
 
         // Update view
         Intent senseintent = new Intent(Constants.INTENT_UPDATE_SENSORS);
-        senseintent.putExtra(Constants.INTENT_RECEIVED_DATA_EXTRA_DATA, "Sensor "+event.sensor.getName()+" value: "+ Float.toString(event.values[0]));
+        senseintent.putExtra(Constants.INTENT_RECEIVED_DATA_EXTRA_DATA, "Sensor " + event.sensor.getName() + " value: " + Float.toString(event.values[0]));
         LocalBroadcastManager.getInstance(this).sendBroadcast(senseintent);
     }
 

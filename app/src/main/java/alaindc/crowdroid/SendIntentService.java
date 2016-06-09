@@ -82,7 +82,7 @@ public class SendIntentService extends IntentService {
         alarmMgr = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
         Intent intentAlarm = new Intent(getApplicationContext(), SendIntentService.class);
         intentAlarm.setAction(Constants.ACTION_SENDDATA);
-        intentAlarm.putExtra(Constants.EXTRA_TYPE_OF_SENSOR_TO_SEND, ""); // TODO Here set wich sensor to send after time
+        intentAlarm.putExtra(Constants.EXTRA_TYPE_OF_SENSOR_TO_SEND, ""); // TODO Here set which sensor to send after time
         alarmIntent = PendingIntent.getService(getApplicationContext(), 0, intentAlarm, 0);
 
         // TODO Set here time

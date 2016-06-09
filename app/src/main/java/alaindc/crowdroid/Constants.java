@@ -1,7 +1,5 @@
 package alaindc.crowdroid;
 
-import android.content.Context;
-import android.content.res.Resources;
 import android.hardware.Sensor;
 
 import com.google.android.gms.location.GeofenceStatusCodes;
@@ -13,8 +11,7 @@ public class Constants {
 
     public static final String PACKAGE_NAME_ACT = "com.google.android.gms.location.activityrecognition";
 
-    public static String getErrorString(Context context, int errorCode) {
-        Resources mResources = context.getResources();
+    public static String getErrorString(int errorCode) {
         switch (errorCode) {
             case GeofenceStatusCodes.GEOFENCE_NOT_AVAILABLE:
                 return "GEOFENCE NOT AVAILABLE";
@@ -35,12 +32,59 @@ public class Constants {
         return false;
     }
 
-    public static int MONITORED_SENSORS[] = {
-            Sensor.TYPE_AMBIENT_TEMPERATURE,
+    public static final int TYPE_AMPLITUDE = 100;
+
+    public static final int MONITORED_SENSORS[] = {
+            TYPE_AMPLITUDE,
             Sensor.TYPE_LIGHT,
-            Sensor.TYPE_RELATIVE_HUMIDITY,
-            Sensor.TYPE_PRESSURE
+            Sensor.TYPE_AMBIENT_TEMPERATURE, // Stub
+            Sensor.TYPE_RELATIVE_HUMIDITY, // Stub
+            Sensor.TYPE_PRESSURE // Stub
     };
+
+    public static String getNameOfSensor (int type) {
+        switch (type) {
+            case Sensor.TYPE_LIGHT:
+                return "SENSOR_LIGHT";
+            case Sensor.TYPE_AMBIENT_TEMPERATURE:
+                return "SENSOR_AMBIENT_TEMPERATURE";
+            case Sensor.TYPE_RELATIVE_HUMIDITY:
+                return "SENSOR_RELATIVE_HUMIDITY";
+            case Sensor.TYPE_PRESSURE:
+                return "SENSOR_PRESSURE";
+            case TYPE_AMPLITUDE:
+                return "SENSOR_AMPLITUDE";
+
+        }
+        return "";
+    }
+
+    // To keep alarms after receiving values from server
+    public static int getIndexAlarmForSensor (int type) {
+        switch (type) {
+            case Sensor.TYPE_AMBIENT_TEMPERATURE:
+                return 0;
+            case Sensor.TYPE_RELATIVE_HUMIDITY:
+                return 1;
+            case Sensor.TYPE_PRESSURE:
+                return 2;
+            case TYPE_AMPLITUDE:
+                return 3;
+            case Sensor.TYPE_LIGHT:
+                return 4;
+
+        }
+        return -1;
+    }
+
+    public static final int STUBBED_MONITORED_SENSORS[] = {
+            Sensor.TYPE_AMBIENT_TEMPERATURE, // Stub
+            Sensor.TYPE_RELATIVE_HUMIDITY, // Stub
+            Sensor.TYPE_PRESSURE // Stub
+    };
+
+    public static String INTENT_STUB_SENSOR_CHANGED = "INTENT_STUB_SENSOR_CHANGED";
+    public static String INTENT_STUB_SENSOR_CHANGED_TYPE = "INTENT_STUB_SENSOR_CHANGED_TYPE";
 
     // Location updates intervals in sec
     public static int UPDATE_INTERVAL = 10000; // 10 sec
@@ -53,12 +97,12 @@ public class Constants {
 
     public static String EXTRA_TYPE_OF_SENSOR_TO_SEND = "EXTRA_TYPE_OF_SENSOR_TO_SEND";
 
-    public static String PREF_FILE = "CROWDROIDSHAREDPREFERENCESFILE";
+    public static String PREF_FILE = "CROWDROID_SHAREDPREFERENCES_FILE";
 
-    public static String PREF_LATITUDE = "CROWDROIDLATITUDE";
-    public static String PREF_LONGITUDE = "CROWDROIDLONGITUDE";
-    public static String PREF_AMPLITUDE = "CROWDROIDAMPLITUDE";
-    public static String PREF_SENSOR_ = "CROWDROIDSENSOR_";
+    public static String PREF_LATITUDE = "CROWDROID_PREF_LATITUDE";
+    public static String PREF_LONGITUDE = "CROWDROID_PREF_LONGITUDE";
+    public static String PREF_AMPLITUDE = "CROWDROID_PREF_AMPLITUDE";
+    public static String PREF_SENSOR_ = "CROWDROID_PREF_SENSOR_";
 
     public static String INTENT_RECEIVED_DATA = "INTENT_RECEIVED_DATA";
     public static String INTENT_RECEIVED_DATA_EXTRA_DATA = "INTENT_RECEIVED_DATA_EXTRA_DATA";
@@ -69,20 +113,10 @@ public class Constants {
     public static String INTENT_START_SENSORS = "INTENT_START_SENSORS";
 
     public static String INTENT_START_AUDIOAMPLITUDE_SENSE = "INTENT_START_AUDIOAMPLITUDE_SENSE";
-
     public static String EXTRA_AMPLITUDE = "EXTRA_AMPLITUDE";
 
-    /**
-     * Used to set an expiration time for a geofence. After this amount of time Location Services
-     * stops tracking the geofence.
-     */
     public static final long GEOFENCE_EXPIRATION_IN_HOURS = 12;
-
-    /**
-     * For this sample, geofences expire after twelve hours.
-     */
     public static final long GEOFENCE_EXPIRATION_IN_MILLISECONDS =
             GEOFENCE_EXPIRATION_IN_HOURS * 60 * 60 * 1000;
-    public static final float GEOFENCE_RADIUS_IN_METERS = 1609; // 1 mile, 1.6 km
 
 }

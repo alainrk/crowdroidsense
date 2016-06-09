@@ -42,6 +42,12 @@ public class Constants {
             Sensor.TYPE_PRESSURE // Stub
     };
 
+    public static final int STUBBED_MONITORED_SENSORS[] = {
+            Sensor.TYPE_AMBIENT_TEMPERATURE, // Stub
+            Sensor.TYPE_RELATIVE_HUMIDITY, // Stub
+            Sensor.TYPE_PRESSURE // Stub
+    };
+
     public static String getNameOfSensor (int type) {
         switch (type) {
             case Sensor.TYPE_LIGHT:
@@ -76,12 +82,6 @@ public class Constants {
         }
         return -1;
     }
-
-    public static final int STUBBED_MONITORED_SENSORS[] = {
-            Sensor.TYPE_AMBIENT_TEMPERATURE, // Stub
-            Sensor.TYPE_RELATIVE_HUMIDITY, // Stub
-            Sensor.TYPE_PRESSURE // Stub
-    };
 
     public static String INTENT_STUB_SENSOR_CHANGED = "INTENT_STUB_SENSOR_CHANGED";
     public static String INTENT_STUB_SENSOR_CHANGED_TYPE = "INTENT_STUB_SENSOR_CHANGED_TYPE";

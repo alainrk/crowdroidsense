@@ -14,8 +14,6 @@ import android.os.SystemClock;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import java.sql.Time;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -24,8 +22,6 @@ public class SensorsIntentService extends IntentService implements SensorEventLi
     private SensorManager mSensorManager;
     private GetAmplitudeTask amplitudeTask;
 
-//    private ArrayList<AlarmManager> alarmMgr;
-//    private ArrayList<PendingIntent> alarmIntent;
 
     private AlarmManager alarmMgr;
     private PendingIntent alarmIntent;
@@ -34,8 +30,6 @@ public class SensorsIntentService extends IntentService implements SensorEventLi
 
     public SensorsIntentService() {
         super("SensorsIntentService");
-//        alarmMgr = new ArrayList<>(Constants.MONITORED_SENSORS.length);
-//        alarmIntent = new ArrayList<>(Constants.MONITORED_SENSORS.length);
         random = new Random(System.currentTimeMillis());
     }
 
@@ -66,10 +60,17 @@ public class SensorsIntentService extends IntentService implements SensorEventLi
                 amplitudeTask.getData();
             }
 
-            if (action.equals(Constants.INTENT_STUB_SENSOR_CHANGED)) {
+            if (action.equals(Constants.INTENT_STUB_SENSOR_CHANGED + Sensor.TYPE_AMBIENT_TEMPERATURE)) {
                 stub_onSensorChanged(intent.getIntExtra(Constants.INTENT_STUB_SENSOR_CHANGED_TYPE, -1));
             }
 
+            if (action.equals(Constants.INTENT_STUB_SENSOR_CHANGED + Sensor.TYPE_PRESSURE)) {
+                stub_onSensorChanged(intent.getIntExtra(Constants.INTENT_STUB_SENSOR_CHANGED_TYPE, -1));
+            }
+
+            if (action.equals(Constants.INTENT_STUB_SENSOR_CHANGED + Sensor.TYPE_RELATIVE_HUMIDITY)) {
+                stub_onSensorChanged(intent.getIntExtra(Constants.INTENT_STUB_SENSOR_CHANGED_TYPE, -1));
+            }
             // TODO Accorpare in modo generico con gli altri sensori (praticamente stub)
             if (action.equals(Constants.INTENT_RECEIVED_AMPLITUDE)){
                 double amplitude = intent.getDoubleExtra(Constants.EXTRA_AMPLITUDE,-1);
@@ -86,13 +87,15 @@ public class SensorsIntentService extends IntentService implements SensorEventLi
                     LocalBroadcastManager.getInstance(this).sendBroadcast(amplintent);
                 }
 
+                int index = Constants.getIndexAlarmForSensor(Constants.TYPE_AMPLITUDE);
+
                 // Set the alarms for next sensing of amplitude
                 alarmMgr = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
                 Intent intentAlarm = new Intent(getApplicationContext(), SensorsIntentService.class);
                 intentAlarm.setAction(Constants.INTENT_START_AUDIOAMPLITUDE_SENSE);
                 alarmIntent = PendingIntent.getService(getApplicationContext(), 0, intentAlarm, 0);
 
-                // TODO Set here time
+                // TODO Set timeout time from server indications
                 int seconds = 10;
                 alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                         SystemClock.elapsedRealtime() +
@@ -113,6 +116,8 @@ public class SensorsIntentService extends IntentService implements SensorEventLi
         // Random value
         float value = random.nextFloat();
 
+        int index = Constants.getIndexAlarmForSensor(typeSensor);
+
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(Constants.PREF_FILE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(Constants.PREF_SENSOR_ + typeSensor, Float.toString(value));
@@ -124,15 +129,13 @@ public class SensorsIntentService extends IntentService implements SensorEventLi
         LocalBroadcastManager.getInstance(this).sendBroadcast(senseintent);
 
         // Set the alarm random
-//        alarmMgr[Constants.getIndexAlarmForSensor(typeSensor)] = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
         alarmMgr = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
         Intent intentAlarm = new Intent(getApplicationContext(), SensorsIntentService.class);
-        intentAlarm.setAction(Constants.INTENT_STUB_SENSOR_CHANGED);
+        intentAlarm.setAction(Constants.INTENT_STUB_SENSOR_CHANGED + typeSensor);
         intentAlarm.putExtra(Constants.INTENT_STUB_SENSOR_CHANGED_TYPE, typeSensor);
-//        alarmIntent[Constants.getIndexAlarmForSensor(typeSensor)] = PendingIntent.getService(getApplicationContext(), 0, intentAlarm, 0);
         alarmIntent = PendingIntent.getService(getApplicationContext(), 0, intentAlarm, 0);
 
-        // Random seconds
+        // TODO Set timeout time from server indications
         int seconds = random.nextInt(5) + 1;
         alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                 SystemClock.elapsedRealtime() +

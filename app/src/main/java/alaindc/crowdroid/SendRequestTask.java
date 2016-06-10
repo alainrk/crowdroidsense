@@ -12,6 +12,7 @@ import android.util.Log;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.URI;
+import java.util.Random;
 
 import de.uzl.itm.ncoap.application.client.ClientCallback;
 import de.uzl.itm.ncoap.application.client.CoapClient;
@@ -26,11 +27,13 @@ public class SendRequestTask extends AsyncTask<Long, Void, SendRequestTask.Spitf
     private CoapClient coapClient;
     private IntentService intentService;
     private String bodytext;
+    private Random random;
 
     public SendRequestTask(CoapClient coapClient, IntentService intentService, String bodytext){
         this.coapClient = coapClient;
         this.bodytext = bodytext;
         this.intentService = intentService;
+        this.random = new Random(System.currentTimeMillis());
     }
 
     private BlockSize getBlock2Size() {
@@ -197,8 +200,10 @@ public class SendRequestTask extends AsyncTask<Long, Void, SendRequestTask.Spitf
             String text = coapResponse.getContent().toString(CoapMessage.CHARSET);
             Log.d("SENDREQUESTTASK",text);
 
+            int ran = random.nextInt(500000); // HACK To avoid action intentservice override
+
             Intent serviceIntent = new Intent(intentService.getApplicationContext(), SendIntentService.class);
-            serviceIntent.setAction(Constants.ACTION_RECEIVEDDATA);
+            serviceIntent.setAction(Constants.ACTION_RECEIVEDDATA+ran);
             serviceIntent.putExtra(Constants.EXTRA_RESPONSE, text);
             intentService.getApplicationContext().startService(serviceIntent);
 

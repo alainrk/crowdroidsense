@@ -52,11 +52,22 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         this.button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+
                 // Start sending messages to server
-                Intent serviceIntent = new Intent(getApplicationContext(), SendIntentService.class);
-                serviceIntent.setAction(Constants.ACTION_SENDDATA);
-                serviceIntent.putExtra(Constants.EXTRA_TYPE_OF_SENSOR_TO_SEND, Constants.TYPE_AMPLITUDE); // TODO Here set to send all kind of sensor for start
-                getApplicationContext().startService(serviceIntent);
+                Intent serviceIntent[] = new Intent[Constants.MONITORED_SENSORS.length];
+                for (int i = 0; i < Constants.MONITORED_SENSORS.length; i++) {
+                    serviceIntent[i] = new Intent(getApplicationContext(), SendIntentService.class);
+                    serviceIntent[i].setAction(Constants.ACTION_SENDDATA+Constants.MONITORED_SENSORS[i]);
+                    serviceIntent[i].putExtra(Constants.EXTRA_TYPE_OF_SENSOR_TO_SEND, Constants.MONITORED_SENSORS[i]); // TODO Here set to send all kind of sensor for start
+                    getApplicationContext().startService(serviceIntent[i]);
+
+                }
+
+                // Start sending messages to server
+//                Intent serviceIntent = new Intent(getApplicationContext(), SendIntentService.class);
+//                serviceIntent.setAction(Constants.ACTION_SENDDATA);
+//                serviceIntent.putExtra(Constants.EXTRA_TYPE_OF_SENSOR_TO_SEND, Constants.TYPE_AMPLITUDE); // TODO Here set to send all kind of sensor for start
+//                getApplicationContext().startService(serviceIntent);
             }
         });
 

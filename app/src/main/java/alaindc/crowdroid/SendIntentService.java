@@ -49,9 +49,10 @@ public class SendIntentService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
             final String action = intent.getAction();
-            if (Constants.ACTION_SENDDATA.equals(action)) {
+            // DIFFERENTIATE like in sensorIntentService per each sensor!
+            if (action.startsWith(Constants.ACTION_SENDDATA)) {
                 handleActionSendData(intent.getIntExtra(Constants.EXTRA_TYPE_OF_SENSOR_TO_SEND, -1)); // Name in shared preference
-            } else if (Constants.ACTION_RECEIVEDDATA.equals(action)) {
+            } else if (action.startsWith(Constants.ACTION_RECEIVEDDATA)) {
                 final String response = intent.getStringExtra(Constants.EXTRA_RESPONSE);
                 handleActionReceivedData(response);
             }
@@ -115,9 +116,11 @@ public class SendIntentService extends IntentService {
             JSONArray jsonArray = new JSONArray(response);
             JSONObject jsonObject = jsonArray.getJSONObject(0);
 
-            timeout = jsonObject.getInt("timeout");
-            radius = jsonObject.getInt("radius");
             sensor = jsonObject.getInt("sensor");
+            // For time homogeneity
+            timeout = jsonObject.getInt("timeout");
+            // For space homogeneity
+            radius = jsonObject.getInt("radius");
             latitude = jsonObject.getDouble("lat");
             longitude = jsonObject.getDouble("long");
 
@@ -125,13 +128,12 @@ public class SendIntentService extends IntentService {
             return;
         }
 
-
         // TODO Set geofence based on server response
 
         // Set timeout based on server response
         alarmMgr = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
         Intent intentAlarm = new Intent(getApplicationContext(), SendIntentService.class);
-        intentAlarm.setAction(Constants.ACTION_SENDDATA);
+        intentAlarm.setAction(Constants.ACTION_SENDDATA+sensor);
         intentAlarm.putExtra(Constants.EXTRA_TYPE_OF_SENSOR_TO_SEND, sensor);
         alarmIntent = PendingIntent.getService(getApplicationContext(), 0, intentAlarm, 0);
 

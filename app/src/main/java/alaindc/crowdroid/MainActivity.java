@@ -11,35 +11,30 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.RadioButton;
 import android.widget.TextView;
 
-import com.google.android.gms.common.api.BooleanResult;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
-    private Button button;
-    private Button buttonLoc;
-    private CheckBox sensorsButton;
-    private CheckBox requestsButton;
+    private Button requestButton;
+    private Button sensorButton;
+    private CheckBox sensorsCheckbox;
+    private CheckBox requestsCheckbox;
     private TextView textView;
     private GoogleMap mMap;
 
@@ -55,27 +50,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         textView = (TextView) findViewById(R.id.textView);
         textView.setMovementMethod(new ScrollingMovementMethod());
 
-        sensorsButton = (CheckBox) findViewById(R.id.sensorscheck);
-//        sensorsButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Log.d("MAIN before", Boolean.toString(sensorsButton.isChecked()));
-//                sensorsButton.setChecked(!sensorsButton.isChecked());
-//                Log.d("MAIN after", Boolean.toString(sensorsButton.isChecked()));
-//            }
-//        });
-        requestsButton = (CheckBox) findViewById(R.id.requestscheck);
-//        requestsButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                requestsButton.setChecked(!requestsButton.isChecked());
-//            }
-//        });
+        sensorsCheckbox = (CheckBox) findViewById(R.id.sensorscheck);
+        requestsCheckbox = (CheckBox) findViewById(R.id.requestscheck);
 
-        this.button = (Button) findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
+        this.requestButton = (Button) findViewById(R.id.button);
+        requestButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
+                requestButton.setEnabled(false);
                 // Start sending messages to server
                 Intent serviceIntent[] = new Intent[Constants.MONITORED_SENSORS.length];
                 for (int i = 0; i < Constants.MONITORED_SENSORS.length; i++) {
@@ -85,18 +66,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     getApplicationContext().startService(serviceIntent[i]);
 
                 }
-
-                // Start sending messages to server
-//                Intent serviceIntent = new Intent(getApplicationContext(), SendIntentService.class);
-//                serviceIntent.setAction(Constants.ACTION_SENDDATA);
-//                serviceIntent.putExtra(Constants.EXTRA_TYPE_OF_SENSOR_TO_SEND, Constants.TYPE_AMPLITUDE); // TODO Here set to send all kind of sensor for start
-//                getApplicationContext().startService(serviceIntent);
             }
         });
 
-        this.buttonLoc = (Button) findViewById(R.id.buttonLoc);
-        buttonLoc.setOnClickListener(new View.OnClickListener() {
+        this.sensorButton = (Button) findViewById(R.id.buttonLoc);
+        sensorButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                sensorButton.setEnabled(false);
                 // Start intent service for update position
                 Intent posintent = new Intent(getApplicationContext(), PositionIntentService.class);
                 getApplicationContext().startService(posintent);
@@ -118,13 +94,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onReceive(Context context, Intent intent) {
                 if (intent.getAction().equals(Constants.INTENT_RECEIVED_DATA)) {
                     String response = intent.getStringExtra(Constants.INTENT_RECEIVED_DATA_EXTRA_DATA);
-                    if (response != null && requestsButton.isChecked())
+                    if (response != null && requestsCheckbox.isChecked())
                         textView.append(response+"\n");
                 } else if (intent.getAction().equals(Constants.INTENT_UPDATE_POS)) {
                     setLocationAndMap();
                 } else if (intent.getAction().equals(Constants.INTENT_UPDATE_SENSORS)) {
                     String response = intent.getStringExtra(Constants.INTENT_RECEIVED_DATA_EXTRA_DATA);
-                    if (response != null && sensorsButton.isChecked())
+                    if (response != null && sensorsCheckbox.isChecked())
                         textView.append(response+"\n");
                 }
             }

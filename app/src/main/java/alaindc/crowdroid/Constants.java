@@ -97,7 +97,7 @@ public class Constants {
 
     // Location updates intervals in sec
     public static int UPDATE_INTERVAL = 10000; // 10 sec
-    public static int FATEST_INTERVAL = 5000; // 5 sec
+    public static int FASTEST_INTERVAL = 5000; // 5 sec
     public static int DISPLACEMENT = 10; // 10 meters
 
     public static String ACTION_SENDDATA = "ACTION_SENDDATA";

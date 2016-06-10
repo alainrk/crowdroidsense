@@ -62,7 +62,7 @@ android:weightSum="2">
             android:layout_height="wrap_content"
             android:text="Sensors"
             android:id="@+id/sensorscheck"
-            android:checked="false"
+            android:checked="true"
             android:clickable="true" />
 
         <CheckBox
@@ -70,7 +70,7 @@ android:weightSum="2">
             android:layout_height="wrap_content"
             android:text="Requests"
             android:id="@+id/requestscheck"
-            android:checked="false"
+            android:checked="true"
             android:clickable="true" />
     </LinearLayout>
 

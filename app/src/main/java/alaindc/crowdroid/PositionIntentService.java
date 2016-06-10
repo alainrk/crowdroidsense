@@ -40,12 +40,9 @@ public class PositionIntentService extends IntentService implements GoogleApiCli
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        if (intent != null) {
-            buildGoogleApiClient();
-            createLocationRequest();
-            if (mGoogleApiClient != null) {
-                mGoogleApiClient.connect();
-            }
+        buildGoogleApiClient();
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.connect();
         }
     }
     /**
@@ -64,7 +61,7 @@ public class PositionIntentService extends IntentService implements GoogleApiCli
     protected void createLocationRequest() {
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(Constants.UPDATE_INTERVAL);
-        mLocationRequest.setFastestInterval(Constants.FATEST_INTERVAL);
+        mLocationRequest.setFastestInterval(Constants.FASTEST_INTERVAL);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setSmallestDisplacement(Constants.DISPLACEMENT);
     }
@@ -96,6 +93,7 @@ public class PositionIntentService extends IntentService implements GoogleApiCli
     @Override
     public void onConnected(Bundle arg0) {
         if (mRequestingLocationUpdates) {
+            createLocationRequest();
             startLocationUpdates();
         }
     }

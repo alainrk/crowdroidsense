@@ -9,7 +9,7 @@ import com.google.android.gms.location.GeofenceStatusCodes;
  */
 public class Constants {
 
-    //public static final String SERVER_ADDR = "melot.cs.unibo.it";//"192.168.1.112";
+//    public static final String SERVER_ADDR = "melot.cs.unibo.it";
     public static final String SERVER_ADDR = "192.168.1.118";
     public static final int SERVER_PORT = 5683;
     public static final String SERVER_LOCAL_URI = "/myresp";
@@ -43,11 +43,12 @@ public class Constants {
 
     public static final int TYPE_AMPLITUDE = 100;
     public static final int TYPE_WIFI = 101;
-    public static final int TYPE_LTE = 102;
+    public static final int TYPE_TEL = 102;
 
     public static final int MONITORED_SENSORS[] = {
             TYPE_AMPLITUDE,
             TYPE_WIFI,
+            TYPE_TEL,
             Sensor.TYPE_LIGHT,
             Sensor.TYPE_AMBIENT_TEMPERATURE, // Stub
             Sensor.TYPE_RELATIVE_HUMIDITY, // Stub
@@ -74,9 +75,11 @@ public class Constants {
                 return "SENSOR_AMPLITUDE";
             case TYPE_WIFI:
                 return "SENSOR_WIFI";
-
+            case TYPE_TEL:
+                return "SENSOR_WIFI";
+            default:
+                return "SENSOR_UNKNOWN";
         }
-        return "";
     }
 
     // To keep alarms after receiving values from server
@@ -94,6 +97,8 @@ public class Constants {
                 return 4;
             case TYPE_WIFI:
                 return 5;
+            case TYPE_TEL:
+                return 6;
         }
         return -1;
     }
@@ -123,7 +128,6 @@ public class Constants {
     public static String INTENT_RECEIVED_AMPLITUDE = "INTENT_RECEIVED_AMPLITUDE";
     public static String INTENT_UPDATE_POS = "INTENT_UPDATE_POS";
     public static String INTENT_UPDATE_SENSORS = "INTENT_UPDATE_SENSORS";
-    public static String INTENT_UPDATE_AMPLITUDE = "INTENT_UPDATE_AMPLITUDE";
     public static String INTENT_START_SENSORS = "INTENT_START_SENSORS";
 
     public static String INTENT_START_AUDIOAMPLITUDE_SENSE = "INTENT_START_AUDIOAMPLITUDE_SENSE";

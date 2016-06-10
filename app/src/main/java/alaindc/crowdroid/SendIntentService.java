@@ -79,8 +79,10 @@ public class SendIntentService extends IntentService {
         String longitude = sharedPref.getString(Constants.PREF_LONGITUDE,"-1");
         String latitude = sharedPref.getString(Constants.PREF_LATITUDE,"-1");
 
-        if (typeOfSensorToSend == Constants.TYPE_WIFI){
+        if (typeOfSensorToSend == Constants.TYPE_WIFI) {
             sensordata = TextUtils.join(",", RadioUtils.getWifiInfo(this));
+        } else if (typeOfSensorToSend == Constants.TYPE_TEL){
+            sensordata = TextUtils.join(",", RadioUtils.getTelInfo(this));
         } else {
             sensordata = sharedPref.getString(sharedPreftypeSensor, "-1");
         }

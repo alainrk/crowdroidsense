@@ -56,7 +56,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         this.requestButton = (Button) findViewById(R.id.button);
         requestButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                requestButton.setEnabled(false);
+                // TODO: Disable
+                //requestButton.setEnabled(false);
+
                 // Start sending messages to server
                 Intent serviceIntent[] = new Intent[Constants.MONITORED_SENSORS.length];
                 for (int i = 0; i < Constants.MONITORED_SENSORS.length; i++) {
@@ -73,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         sensorButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 sensorButton.setEnabled(false);
+
                 // Start intent service for update position
                 Intent posintent = new Intent(getApplicationContext(), PositionIntentService.class);
                 getApplicationContext().startService(posintent);

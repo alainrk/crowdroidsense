@@ -9,6 +9,11 @@ import com.google.android.gms.location.GeofenceStatusCodes;
  */
 public class Constants {
 
+    //public static final String SERVER_ADDR = "melot.cs.unibo.it";//"192.168.1.112";
+    public static final String SERVER_ADDR = "192.168.1.118";
+    public static final int SERVER_PORT = 5683;
+    public static final String SERVER_LOCAL_URI = "/myresp";
+
     public static final String PACKAGE_NAME_ACT = "com.google.android.gms.location.activityrecognition";
 
     public static String getErrorString(int errorCode) {

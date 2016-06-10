@@ -80,9 +80,9 @@ public class SendRequestTask extends AsyncTask<Long, Void, SendRequestTask.Spitf
         boolean confirmable, observe;
         BlockSize block1Size, block2Size;
 
-        serverName = "melot.cs.unibo.it";//"192.168.1.112";
-        portNumber = 5683;
-        localUri = "/myresp";
+        serverName = Constants.SERVER_ADDR;
+        portNumber = Constants.SERVER_PORT;
+        localUri = Constants.SERVER_LOCAL_URI;
         confirmable = true;
         observe = false;
         acceptedFormats = "";

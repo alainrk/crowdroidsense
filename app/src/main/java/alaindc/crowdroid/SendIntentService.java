@@ -99,20 +99,43 @@ public class SendIntentService extends IntentService {
     }
 
     private void handleActionReceivedData(String response) {
+
+        // Data got from server response
+        int timeout; // sec
+        int radius; // meters
+        int sensor;
+        double latitude, longitude;
+
         // Update view sending a broadcast intent
         Intent intent = new Intent(Constants.INTENT_RECEIVED_DATA);
         intent.putExtra(Constants.INTENT_RECEIVED_DATA_EXTRA_DATA, response);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
-        // Set the alarms
+        try {
+            JSONArray jsonArray = new JSONArray(response);
+            JSONObject jsonObject = jsonArray.getJSONObject(0);
+
+            timeout = jsonObject.getInt("timeout");
+            radius = jsonObject.getInt("radius");
+            sensor = jsonObject.getInt("sensor");
+            latitude = jsonObject.getDouble("lat");
+            longitude = jsonObject.getDouble("long");
+
+        } catch (JSONException e) {
+            return;
+        }
+
+
+        // TODO Set geofence based on server response
+
+        // Set timeout based on server response
         alarmMgr = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
         Intent intentAlarm = new Intent(getApplicationContext(), SendIntentService.class);
         intentAlarm.setAction(Constants.ACTION_SENDDATA);
-        intentAlarm.putExtra(Constants.EXTRA_TYPE_OF_SENSOR_TO_SEND, ""); // TODO Here set which sensor to send after time
+        intentAlarm.putExtra(Constants.EXTRA_TYPE_OF_SENSOR_TO_SEND, sensor);
         alarmIntent = PendingIntent.getService(getApplicationContext(), 0, intentAlarm, 0);
 
-        // TODO Set here time
-        int seconds = 999999;
+        int seconds = timeout;
         alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                 SystemClock.elapsedRealtime() +
                         seconds * 1000, alarmIntent);

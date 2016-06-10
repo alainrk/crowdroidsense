@@ -38,15 +38,24 @@ public class GetAmplitudeTask {
                 e.printStackTrace();
             }
             getAmplitude();
-            mRecorder.start();
+            try {
+                mRecorder.start();
+            } catch (RuntimeException e) {
+                return;
+            }
+
         }
     }
 
     public void stop() {
         if (mRecorder != null) {
-            mRecorder.stop();
-            mRecorder.release();
-            mRecorder = null;
+            try {
+                mRecorder.stop();
+                mRecorder.release();
+                mRecorder = null;
+            } catch (RuntimeException e) {
+                return;
+            }
         }
     }
 

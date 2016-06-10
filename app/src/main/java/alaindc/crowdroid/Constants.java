@@ -30,12 +30,16 @@ public class Constants {
     }
 
     public static boolean isInMonitoredSensors (int type) {
-        for (int i: MONITORED_SENSORS){
+        for (int i: MONITORED_SENSORS_REAL){
             if (i == type)
                 return true;
         }
         return false;
     }
+
+    public static final int MONITORED_SENSORS_REAL[] = {
+            Sensor.TYPE_LIGHT
+    };
 
     public static final int TYPE_AMPLITUDE = 100;
 

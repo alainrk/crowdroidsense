@@ -17,10 +17,14 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
+import com.google.android.gms.common.api.BooleanResult;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -34,6 +38,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
     private Button button;
     private Button buttonLoc;
+    private CheckBox sensorsButton;
+    private CheckBox requestsButton;
     private TextView textView;
     private GoogleMap mMap;
 
@@ -48,6 +54,23 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         textView = (TextView) findViewById(R.id.textView);
         textView.setMovementMethod(new ScrollingMovementMethod());
+
+        sensorsButton = (CheckBox) findViewById(R.id.sensorscheck);
+//        sensorsButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Log.d("MAIN before", Boolean.toString(sensorsButton.isChecked()));
+//                sensorsButton.setChecked(!sensorsButton.isChecked());
+//                Log.d("MAIN after", Boolean.toString(sensorsButton.isChecked()));
+//            }
+//        });
+        requestsButton = (CheckBox) findViewById(R.id.requestscheck);
+//        requestsButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                requestsButton.setChecked(!requestsButton.isChecked());
+//            }
+//        });
 
         this.button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
@@ -95,17 +118,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onReceive(Context context, Intent intent) {
                 if (intent.getAction().equals(Constants.INTENT_RECEIVED_DATA)) {
                     String response = intent.getStringExtra(Constants.INTENT_RECEIVED_DATA_EXTRA_DATA);
-                    if (response != null)
+                    if (response != null && requestsButton.isChecked())
                         textView.append(response+"\n");
                 } else if (intent.getAction().equals(Constants.INTENT_UPDATE_POS)) {
                     setLocationAndMap();
-                } else if (intent.getAction().equals(Constants.INTENT_UPDATE_AMPLITUDE)) {
-                    String response = intent.getStringExtra(Constants.INTENT_RECEIVED_DATA_EXTRA_DATA);
-                    if (response != null)
-                        textView.append(response+"\n");
                 } else if (intent.getAction().equals(Constants.INTENT_UPDATE_SENSORS)) {
                     String response = intent.getStringExtra(Constants.INTENT_RECEIVED_DATA_EXTRA_DATA);
-                    if (response != null)
+                    if (response != null && sensorsButton.isChecked())
                         textView.append(response+"\n");
                 }
             }
@@ -114,11 +133,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         IntentFilter rcvDataIntFilter = new IntentFilter(Constants.INTENT_RECEIVED_DATA);
         IntentFilter updatePosIntFilter = new IntentFilter(Constants.INTENT_UPDATE_POS);
         IntentFilter updateSenseIntFilter = new IntentFilter(Constants.INTENT_UPDATE_SENSORS);
-        IntentFilter updateAmplIntFilter = new IntentFilter(Constants.INTENT_UPDATE_AMPLITUDE);
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, rcvDataIntFilter);
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, updatePosIntFilter);
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, updateSenseIntFilter);
-        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, updateAmplIntFilter);
 
 
     }

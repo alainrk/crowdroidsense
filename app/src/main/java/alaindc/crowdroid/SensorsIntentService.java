@@ -82,9 +82,9 @@ public class SensorsIntentService extends IntentService implements SensorEventLi
                     editor.commit();
 
                     // Update view
-                    Intent amplintent = new Intent(Constants.INTENT_UPDATE_AMPLITUDE);
-                    amplintent.putExtra(Constants.INTENT_RECEIVED_DATA_EXTRA_DATA, "Amplitude value: "+ Double.toString(amplitude));
-                    LocalBroadcastManager.getInstance(this).sendBroadcast(amplintent);
+                    Intent senseintent = new Intent(Constants.INTENT_UPDATE_SENSORS);
+                    senseintent.putExtra(Constants.INTENT_RECEIVED_DATA_EXTRA_DATA, "Sensor " + Constants.getNameOfSensor(Constants.TYPE_AMPLITUDE) + " value: " + Double.toString(amplitude));
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(senseintent);
                 }
 
                 int index = Constants.getIndexAlarmForSensor(Constants.TYPE_AMPLITUDE);
@@ -160,7 +160,7 @@ public class SensorsIntentService extends IntentService implements SensorEventLi
 
         // Update view
         Intent senseintent = new Intent(Constants.INTENT_UPDATE_SENSORS);
-        senseintent.putExtra(Constants.INTENT_RECEIVED_DATA_EXTRA_DATA, "Sensor " + event.sensor.getName() + " value: " + Float.toString(event.values[0]));
+        senseintent.putExtra(Constants.INTENT_RECEIVED_DATA_EXTRA_DATA, "Sensor " + Constants.getNameOfSensor(event.sensor.getType()) + " value: " + Float.toString(event.values[0]));
         LocalBroadcastManager.getInstance(this).sendBroadcast(senseintent);
     }
 

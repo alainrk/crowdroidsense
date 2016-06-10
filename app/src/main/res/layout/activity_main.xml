@@ -29,14 +29,14 @@ android:weightSum="2">
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Start Services"
+            android:text="Sensors Start"
             android:id="@+id/buttonLoc"
             android:layout_weight="1.05" />
 
         <Button
             android:layout_width="204dp"
             android:layout_height="wrap_content"
-            android:text="START request"
+            android:text="SERVER SEND START"
             android:id="@+id/button" />
     </LinearLayout>
 
@@ -48,5 +48,30 @@ android:weightSum="2">
         android:layout_weight="0.95"
         android:padding="1dp"
         android:gravity="bottom"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="0.17"
+        android:textAlignment="center">
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sensors"
+            android:id="@+id/sensorscheck"
+            android:checked="false"
+            android:clickable="true" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Requests"
+            android:id="@+id/requestscheck"
+            android:checked="false"
+            android:clickable="true" />
+    </LinearLayout>
 
 </LinearLayout>

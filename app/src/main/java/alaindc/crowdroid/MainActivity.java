@@ -4,7 +4,6 @@ package alaindc.crowdroid;
  * Created by alain on 06/06/16.
  */
 
-import android.app.ActionBar;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -12,20 +11,11 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 
 import android.content.pm.PackageManager;
-import android.net.wifi.WifiManager;
-import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.telephony.CellInfo;
-import android.telephony.CellInfoGsm;
-import android.telephony.CellInfoLte;
-import android.telephony.CellLocation;
-import android.telephony.CellSignalStrengthGsm;
-import android.telephony.TelephonyManager;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -38,9 +28,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.common.collect.Table;
-
-import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -125,34 +112,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, rcvDataIntFilter);
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, updatePosIntFilter);
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, updateSenseIntFilter);
-
-        /////////////////////////////////////////////////////////////////////////
-        //////////////////////// TEST OTHER MEASURES ////////////////////////
-
-        try {
-            WifiManager wifiManager = (WifiManager)this.getSystemService(Context.WIFI_SERVICE);
-            int linkSpeed = wifiManager.getConnectionInfo().getRssi();
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-
-                TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-
-                CellInfoGsm cellinfogsm = (CellInfoGsm)tm.getAllCellInfo().get(0);
-                CellSignalStrengthGsm cellSignalStrengthGsm = cellinfogsm.getCellSignalStrength();
-                cellSignalStrengthGsm.getDbm();
-
-                CellLocation cellLocation = tm.getCellLocation();
-                if (cellLocation == null) {
-                    Log.d("","");
-                }
-            }
-        } catch (Exception e) {
-            Log.d("Main lte wifi","Non va");
-        }
-
-        /////////////////////////////////////////////////////////////////////////
-        /////////////////////////////////////////////////////////////////////////
-
 
     }
 

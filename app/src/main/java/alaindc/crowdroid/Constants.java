@@ -42,9 +42,12 @@ public class Constants {
     };
 
     public static final int TYPE_AMPLITUDE = 100;
+    public static final int TYPE_WIFI = 101;
+    public static final int TYPE_LTE = 102;
 
     public static final int MONITORED_SENSORS[] = {
             TYPE_AMPLITUDE,
+            TYPE_WIFI,
             Sensor.TYPE_LIGHT,
             Sensor.TYPE_AMBIENT_TEMPERATURE, // Stub
             Sensor.TYPE_RELATIVE_HUMIDITY, // Stub
@@ -69,6 +72,8 @@ public class Constants {
                 return "SENSOR_PRESSURE";
             case TYPE_AMPLITUDE:
                 return "SENSOR_AMPLITUDE";
+            case TYPE_WIFI:
+                return "SENSOR_WIFI";
 
         }
         return "";
@@ -87,7 +92,8 @@ public class Constants {
                 return 3;
             case Sensor.TYPE_LIGHT:
                 return 4;
-
+            case TYPE_WIFI:
+                return 5;
         }
         return -1;
     }

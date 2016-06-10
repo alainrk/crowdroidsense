@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.SystemClock;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.text.format.DateFormat;
 
 import org.json.JSONArray;
@@ -65,6 +66,7 @@ public class SendIntentService extends IntentService {
             return;
 
         String body;
+        String sensordata;
 
         String sharedPreftypeSensor = Constants.PREF_SENSOR_+typeOfSensorToSend;
         String nameOfSensor = Constants.getNameOfSensor(typeOfSensorToSend);
@@ -76,11 +78,17 @@ public class SendIntentService extends IntentService {
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(Constants.PREF_FILE,Context.MODE_PRIVATE);
         String longitude = sharedPref.getString(Constants.PREF_LONGITUDE,"-1");
         String latitude = sharedPref.getString(Constants.PREF_LATITUDE,"-1");
-        String sensordata = sharedPref.getString(sharedPreftypeSensor, "-1");
+
+        if (typeOfSensorToSend == Constants.TYPE_WIFI){
+            sensordata = TextUtils.join(",", RadioUtils.getWifiInfo(this));
+        } else {
+            sensordata = sharedPref.getString(sharedPreftypeSensor, "-1");
+        }
 
         try {
             // Here we convert Java Object to JSON
             JSONObject jsonObj = new JSONObject();
+            jsonObj.put("user", RadioUtils.getMyDeviceId(this));
             jsonObj.put("time", timestamp); // Set the first name/pair
             jsonObj.put("lat", latitude);
             jsonObj.put("long", longitude);

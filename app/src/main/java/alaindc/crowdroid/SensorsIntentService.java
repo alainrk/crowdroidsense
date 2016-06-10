@@ -78,7 +78,7 @@ public class SensorsIntentService extends IntentService implements SensorEventLi
                 if (amplitude > 0) {
                     SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(Constants.PREF_FILE, Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPref.edit();
-                    editor.putString(Constants.PREF_AMPLITUDE, Double.toString(amplitude));
+                    editor.putString(Constants.PREF_SENSOR_+Constants.TYPE_AMPLITUDE, Double.toString(amplitude));
                     editor.commit();
 
                     // Update view

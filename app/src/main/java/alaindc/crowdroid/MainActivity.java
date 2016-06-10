@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 // Start sending messages to server
                 Intent serviceIntent = new Intent(getApplicationContext(), SendIntentService.class);
                 serviceIntent.setAction(Constants.ACTION_SENDDATA);
-                serviceIntent.putExtra(Constants.EXTRA_TYPE_OF_SENSOR_TO_SEND, Constants.PREF_AMPLITUDE); // TODO Here set to send all kind of sensor for start
+                serviceIntent.putExtra(Constants.EXTRA_TYPE_OF_SENSOR_TO_SEND, Constants.TYPE_AMPLITUDE); // TODO Here set to send all kind of sensor for start
                 getApplicationContext().startService(serviceIntent);
             }
         });

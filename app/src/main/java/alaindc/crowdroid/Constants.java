@@ -101,7 +101,6 @@ public class Constants {
 
     public static String PREF_LATITUDE = "CROWDROID_PREF_LATITUDE";
     public static String PREF_LONGITUDE = "CROWDROID_PREF_LONGITUDE";
-    public static String PREF_AMPLITUDE = "CROWDROID_PREF_AMPLITUDE";
     public static String PREF_SENSOR_ = "CROWDROID_PREF_SENSOR_";
 
     public static String INTENT_RECEIVED_DATA = "INTENT_RECEIVED_DATA";

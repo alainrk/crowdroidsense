@@ -9,9 +9,10 @@ import android.content.SharedPreferences;
 import android.os.SystemClock;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.format.DateFormat;
-import android.util.Log;
 
-import com.google.android.gms.common.api.GoogleApiClient;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Calendar;
 
@@ -49,7 +50,7 @@ public class SendIntentService extends IntentService {
         if (intent != null) {
             final String action = intent.getAction();
             if (Constants.ACTION_SENDDATA.equals(action)) {
-                handleActionSendData(intent.getStringExtra(Constants.EXTRA_TYPE_OF_SENSOR_TO_SEND)); // Name in shared preference
+                handleActionSendData(intent.getIntExtra(Constants.EXTRA_TYPE_OF_SENSOR_TO_SEND, -1)); // Name in shared preference
             } else if (Constants.ACTION_RECEIVEDDATA.equals(action)) {
                 final String response = intent.getStringExtra(Constants.EXTRA_RESPONSE);
                 handleActionReceivedData(response);
@@ -58,17 +59,42 @@ public class SendIntentService extends IntentService {
     }
 
     // TODO REMOVEME Debug purpose
-    private void handleActionSendData(String typeOfSensorToSend) {
+    private void handleActionSendData(int typeOfSensorToSend) {
+        if (typeOfSensorToSend < 0)
+            return;
+
+        String body;
+
+        String sharedPreftypeSensor = Constants.PREF_SENSOR_+typeOfSensorToSend;
+        String nameOfSensor = Constants.getNameOfSensor(typeOfSensorToSend);
+
         Long tsLong = System.currentTimeMillis();
         String timestamp = tsLong.toString();
-        String date = getDate(tsLong);
+        //String date = getDate(tsLong);
 
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(Constants.PREF_FILE,Context.MODE_PRIVATE);
         String longitude = sharedPref.getString(Constants.PREF_LONGITUDE,"-1");
         String latitude = sharedPref.getString(Constants.PREF_LATITUDE,"-1");
-        String sensordata = sharedPref.getString(typeOfSensorToSend, "-1");
+        String sensordata = sharedPref.getString(sharedPreftypeSensor, "-1");
 
-        SendRequestTask sendreq = new SendRequestTask(clientApplication, this, date+", "+latitude+", "+longitude+" Sensor "+typeOfSensorToSend+": "+sensordata);
+        try {
+            // Here we convert Java Object to JSON
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.put("time", timestamp); // Set the first name/pair
+            jsonObj.put("lat", latitude);
+            jsonObj.put("long", longitude);
+            jsonObj.put("sensor", typeOfSensorToSend);
+            jsonObj.put("value", sensordata);
+
+            JSONArray jsonArr = new JSONArray();
+            jsonArr.put(jsonObj);
+            body = jsonArr.toString();
+
+        } catch (JSONException e) {
+            return;
+        }
+
+        SendRequestTask sendreq = new SendRequestTask(clientApplication, this, body);
         ClientCallback clientCallback = sendreq.doInBackground(POST);
     }
 

@@ -76,6 +76,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onClick(View v) {
                 sensorButton.setEnabled(false);
 
+                // Clear preferences
+                getSharedPreferences(Constants.PREF_FILE,Context.MODE_PRIVATE).edit().clear().commit();
+
                 // Start intent service for update position
                 Intent posintent = new Intent(getApplicationContext(), PositionIntentService.class);
                 getApplicationContext().startService(posintent);

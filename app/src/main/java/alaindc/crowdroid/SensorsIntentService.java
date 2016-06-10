@@ -12,6 +12,9 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.SystemClock;
 import android.support.v4.content.LocalBroadcastManager;
+import android.telephony.PhoneStateListener;
+import android.telephony.SignalStrength;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import java.util.List;
@@ -22,9 +25,11 @@ public class SensorsIntentService extends IntentService implements SensorEventLi
     private SensorManager mSensorManager;
     private GetAmplitudeTask amplitudeTask;
 
-
     private AlarmManager alarmMgr;
     private PendingIntent alarmIntent;
+
+    private RadioUtils radioUtils;
+    private TelephonyManager telephonManager;
 
     private Random random;
 
@@ -38,6 +43,16 @@ public class SensorsIntentService extends IntentService implements SensorEventLi
         if (intent != null) {
             final String action = intent.getAction();
             if (action.equals(Constants.INTENT_START_SENSORS)) {
+
+                // TODO This does not work when screen off, because (maybe) die RadioUtils, so the update does not reach it
+//                try {
+//                    radioUtils = new RadioUtils(getApplicationContext());
+//                    telephonManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+//                    telephonManager.listen(radioUtils, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
+//                }
+//                catch (Exception ex) {
+//                    ex.printStackTrace();
+//                }
 
                 // Configure sensors and eventlistener
                 mSensorManager = (SensorManager) getApplicationContext().getSystemService(Context.SENSOR_SERVICE);

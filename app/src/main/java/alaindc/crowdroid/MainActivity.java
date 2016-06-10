@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
+        mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
     }
 
     private void setLocationAndMap() {
@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         LatLng target = new LatLng(latitude, longitude);
 
-        mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+
         mMap.clear();
         mMap.addMarker(
                 new MarkerOptions()

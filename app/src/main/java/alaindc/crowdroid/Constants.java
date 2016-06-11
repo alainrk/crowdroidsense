@@ -16,6 +16,8 @@ public class Constants {
 
     public static final String PACKAGE_NAME_ACT = "com.google.android.gms.location.activityrecognition";
 
+        public static final String GEOFENCES_ADDED_KEY = "GEOFENCES_ADDED_KEY";
+
     public static String getErrorString(int errorCode) {
         switch (errorCode) {
             case GeofenceStatusCodes.GEOFENCE_NOT_AVAILABLE:
@@ -132,6 +134,11 @@ public class Constants {
 
     public static String INTENT_START_AUDIOAMPLITUDE_SENSE = "INTENT_START_AUDIOAMPLITUDE_SENSE";
     public static String EXTRA_AMPLITUDE = "EXTRA_AMPLITUDE";
+
+    public static String EXTRA_GEOFENCE_SENSORTYPE = "EXTRA_GEOFENCE_SENSORTYPE";
+    public static String EXTRA_GEOFENCE_LATITUDE = "EXTRA_GEOFENCE_LATITUDE";
+    public static String EXTRA_GEOFENCE_LONGITUDE = "EXTRA_GEOFENCE_LONGITUDE";
+    public static String EXTRA_GEOFENCE_RADIUS = "EXTRA_GEOFENCE_RADIUS";
 
     public static final long GEOFENCE_EXPIRATION_IN_HOURS = 12;
     public static final long GEOFENCE_EXPIRATION_IN_MILLISECONDS =

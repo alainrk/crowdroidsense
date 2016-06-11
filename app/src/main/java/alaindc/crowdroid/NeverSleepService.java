@@ -7,11 +7,11 @@ import android.os.IBinder;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 
-public class PhoneListenService extends Service {
+public class NeverSleepService extends Service {
 
     private TelephonyManager telephonManager;
 
-    public PhoneListenService() {
+    public NeverSleepService() {
     }
 
     @Override
@@ -22,7 +22,6 @@ public class PhoneListenService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        // TODO This does not work when screen off, because (maybe) die RadioUtils, so the update does not reach it
         try {
             telephonManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
             telephonManager.listen(new CustomPhoneStateListener(this), PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
@@ -30,6 +29,7 @@ public class PhoneListenService extends Service {
         catch (Exception ex) {
             ex.printStackTrace();
         }
+
         return super.onStartCommand(intent, flags, startId);
     }
 }

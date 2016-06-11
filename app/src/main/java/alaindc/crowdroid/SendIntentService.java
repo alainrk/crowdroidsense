@@ -113,7 +113,7 @@ public class SendIntentService extends IntentService {
 
         // Data got from server response
         int timeout; // sec
-        int radius; // meters
+        double radius; // meters
         int sensor;
         double latitude, longitude;
 
@@ -130,7 +130,7 @@ public class SendIntentService extends IntentService {
             // For time homogeneity
             timeout = jsonObject.getInt("timeout");
             // For space homogeneity
-            radius = jsonObject.getInt("radius");
+            radius = jsonObject.getDouble("radius");
             latitude = jsonObject.getDouble("lat");
             longitude = jsonObject.getDouble("long");
 
@@ -139,6 +139,12 @@ public class SendIntentService extends IntentService {
         }
 
         // TODO Set geofence based on server response
+        Intent geofenceIntent = new Intent(getApplicationContext(), GeofenceIntentService.class);
+        geofenceIntent.putExtra(Constants.EXTRA_GEOFENCE_SENSORTYPE, sensor);
+        geofenceIntent.putExtra(Constants.EXTRA_GEOFENCE_LATITUDE, latitude);
+        geofenceIntent.putExtra(Constants.EXTRA_GEOFENCE_LONGITUDE, longitude);
+        geofenceIntent.putExtra(Constants.EXTRA_GEOFENCE_RADIUS, String.valueOf(radius));
+        getApplicationContext().startService(geofenceIntent);
 
         // Set timeout based on server response
         alarmMgr = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);

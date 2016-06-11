@@ -28,9 +28,6 @@ public class SensorsIntentService extends IntentService implements SensorEventLi
     private AlarmManager alarmMgr;
     private PendingIntent alarmIntent;
 
-    private RadioUtils radioUtils;
-    private TelephonyManager telephonManager;
-
     private Random random;
 
     public SensorsIntentService() {
@@ -43,16 +40,6 @@ public class SensorsIntentService extends IntentService implements SensorEventLi
         if (intent != null) {
             final String action = intent.getAction();
             if (action.equals(Constants.INTENT_START_SENSORS)) {
-
-                // TODO This does not work when screen off, because (maybe) die RadioUtils, so the update does not reach it
-//                try {
-//                    radioUtils = new RadioUtils(getApplicationContext());
-//                    telephonManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-//                    telephonManager.listen(radioUtils, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
-//                }
-//                catch (Exception ex) {
-//                    ex.printStackTrace();
-//                }
 
                 // Configure sensors and eventlistener
                 mSensorManager = (SensorManager) getApplicationContext().getSystemService(Context.SENSOR_SERVICE);
@@ -86,7 +73,7 @@ public class SensorsIntentService extends IntentService implements SensorEventLi
             if (action.equals(Constants.INTENT_STUB_SENSOR_CHANGED + Sensor.TYPE_RELATIVE_HUMIDITY)) {
                 stub_onSensorChanged(intent.getIntExtra(Constants.INTENT_STUB_SENSOR_CHANGED_TYPE, -1));
             }
-            // TODO Accorpare in modo generico con gli altri sensori (praticamente stub)
+
             if (action.equals(Constants.INTENT_RECEIVED_AMPLITUDE)){
                 double amplitude = intent.getDoubleExtra(Constants.EXTRA_AMPLITUDE,-1);
 
@@ -110,8 +97,8 @@ public class SensorsIntentService extends IntentService implements SensorEventLi
                 intentAlarm.setAction(Constants.INTENT_START_AUDIOAMPLITUDE_SENSE);
                 alarmIntent = PendingIntent.getService(getApplicationContext(), 0, intentAlarm, 0);
 
-                // TODO Set timeout time from server indications
-                int seconds = 10;
+                // TIMEOUT for another monitoring of audio
+                int seconds = 30;
                 alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                         SystemClock.elapsedRealtime() +
                                 seconds * 1000, alarmIntent);
@@ -151,7 +138,7 @@ public class SensorsIntentService extends IntentService implements SensorEventLi
         alarmIntent = PendingIntent.getService(getApplicationContext(), 0, intentAlarm, 0);
 
         // TODO Set timeout time from server indications
-        int seconds = random.nextInt(5) + 1;
+        int seconds = random.nextInt(50) + 10; // 10/60 sec
         alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                 SystemClock.elapsedRealtime() +
                         seconds * 1000, alarmIntent);
@@ -167,6 +154,10 @@ public class SensorsIntentService extends IntentService implements SensorEventLi
 
     public final void onSensorChanged(SensorEvent event) {
         Log.d("SENSORS_INTENTSERVICE", event.toString());
+
+        // Hack Reduce updates
+        if (random.nextInt(10) < 9)
+            return;
 
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(Constants.PREF_FILE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();

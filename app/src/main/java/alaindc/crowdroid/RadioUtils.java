@@ -4,39 +4,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.telephony.CellInfo;
-import android.telephony.CellInfoGsm;
-import android.telephony.CellLocation;
-import android.telephony.CellSignalStrengthGsm;
-import android.telephony.PhoneStateListener;
-import android.telephony.SignalStrength;
 import android.telephony.TelephonyManager;
-
-import java.util.List;
 
 /**
  * Created by narko on 10/06/16.
  */
-public class RadioUtils extends PhoneStateListener {
-
-    private Context context;
-
-    public RadioUtils (Context context){
-        this.context = context;
-    }
-
-    @Override
-    public void onSignalStrengthsChanged(SignalStrength signalStrength) {
-        super.onSignalStrengthsChanged(signalStrength);
-        int signStrength = signalStrength.getGsmSignalStrength();
-        signStrength = (2 * signStrength) - 113; // -> dBm
-
-        SharedPreferences sharedPref = context.getSharedPreferences(Constants.PREF_FILE, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(Constants.PREF_SENSOR_+Constants.TYPE_TEL, Integer.toString(signStrength));
-        editor.commit();
-    }
-
+public class RadioUtils {
 
     public static String[] getWifiInfo(Context context){
         try {

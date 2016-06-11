@@ -28,6 +28,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.vision.barcode.Barcode;
 
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -78,6 +79,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 // Clear preferences
                 getSharedPreferences(Constants.PREF_FILE,Context.MODE_PRIVATE).edit().clear().commit();
+
+                // Start service for PhoneListener
+                Intent phoneListIntent = new Intent(getApplicationContext(), PhoneListenService.class);
+                getApplicationContext().startService(phoneListIntent);
 
                 // Start intent service for update position
                 Intent posintent = new Intent(getApplicationContext(), PositionIntentService.class);

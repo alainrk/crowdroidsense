@@ -30,17 +30,27 @@ public class RadioUtils {
     public static String[] getTelInfo(Context context) {
         TelephonyManager mTelephonyManager = (TelephonyManager)
                 context.getSystemService(Context.TELEPHONY_SERVICE);
-        int networkType = mTelephonyManager.getNetworkType();
-        String netType = "";
 
+        String netType = getNetClass(context);
+        String operatorName = mTelephonyManager.getNetworkOperatorName();
+
+        SharedPreferences sharedPref = context.getSharedPreferences(Constants.PREF_FILE,Context.MODE_PRIVATE);
+        String signalStrength = sharedPref.getString(Constants.PREF_SENSOR_+Constants.TYPE_TEL,"0");
+
+        return new String[]{netType,signalStrength,operatorName};
+    }
+
+    public static String getNetClass(Context context) {
+        TelephonyManager mTelephonyManager = (TelephonyManager)
+                context.getSystemService(Context.TELEPHONY_SERVICE);
+        int networkType = mTelephonyManager.getNetworkType();
         switch (networkType) {
             case TelephonyManager.NETWORK_TYPE_GPRS:
             case TelephonyManager.NETWORK_TYPE_EDGE:
             case TelephonyManager.NETWORK_TYPE_CDMA:
             case TelephonyManager.NETWORK_TYPE_1xRTT:
             case TelephonyManager.NETWORK_TYPE_IDEN:
-                netType = "2G";
-                break;
+                return "2G";
             case TelephonyManager.NETWORK_TYPE_UMTS:
             case TelephonyManager.NETWORK_TYPE_EVDO_0:
             case TelephonyManager.NETWORK_TYPE_EVDO_A:
@@ -50,20 +60,12 @@ public class RadioUtils {
             case TelephonyManager.NETWORK_TYPE_EVDO_B:
             case TelephonyManager.NETWORK_TYPE_EHRPD:
             case TelephonyManager.NETWORK_TYPE_HSPAP:
-                netType = "3G";
-                break;
+                return "3G";
             case TelephonyManager.NETWORK_TYPE_LTE:
-                netType = "4G";
-                break;
+                return "4G";
             default:
-                netType = "Unknown";
+                return "Unknown";
         }
-
-        String operatorName = mTelephonyManager.getNetworkOperatorName();
-        SharedPreferences sharedPref = context.getSharedPreferences(Constants.PREF_FILE,Context.MODE_PRIVATE);
-        String signalStrength = sharedPref.getString(Constants.PREF_SENSOR_+Constants.TYPE_TEL,"0");
-
-        return new String[]{netType,signalStrength,operatorName};
     }
 
     public static String getMyDeviceId(Context context){
@@ -77,4 +79,5 @@ public class RadioUtils {
         }
 
     }
+
 }

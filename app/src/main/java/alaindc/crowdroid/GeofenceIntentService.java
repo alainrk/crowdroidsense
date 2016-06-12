@@ -1,5 +1,9 @@
 package alaindc.crowdroid;
 
+/**
+ * Created by alain on 11/06/16.
+ */
+
 import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Intent;

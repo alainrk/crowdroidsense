@@ -1,5 +1,9 @@
 package alaindc.crowdroid;
 
+/**
+ * Created by alain on 06/06/16.
+ */
+
 import android.Manifest;
 import android.app.IntentService;
 import android.content.Context;

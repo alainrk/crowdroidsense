@@ -8,7 +8,7 @@ import android.telephony.SignalStrength;
 import android.telephony.TelephonyManager;
 
 /**
- * Created by narko on 10/06/16.
+ * Created by alain on 10/06/16.
  */
 public class RadioUtils {
 
@@ -16,8 +16,6 @@ public class RadioUtils {
         try {
             WifiManager wifiMan = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
             WifiInfo wifiInfo = wifiMan.getConnectionInfo();
-
-            SharedPreferences sharedPref = context.getSharedPreferences(Constants.PREF_FILE, Context.MODE_PRIVATE);
 
             String bssid = wifiInfo.getBSSID();
             String ssid = wifiInfo.getSSID();

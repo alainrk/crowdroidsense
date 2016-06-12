@@ -1,5 +1,9 @@
 package alaindc.crowdroid;
 
+/**
+ * Created by alain on 06/06/16.
+ */
+
 import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.PendingIntent;
@@ -12,9 +16,6 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.SystemClock;
 import android.support.v4.content.LocalBroadcastManager;
-import android.telephony.PhoneStateListener;
-import android.telephony.SignalStrength;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import java.util.List;
@@ -115,8 +116,27 @@ public class SensorsIntentService extends IntentService implements SensorEventLi
         if (typeSensor < 0)
             return;
 
-        // Random value
-        float value = random.nextFloat();
+        float value, minf, maxf;
+        switch (typeSensor) {
+            case Sensor.TYPE_AMBIENT_TEMPERATURE:
+                minf = -20;
+                maxf = 42;
+                break;
+            case Sensor.TYPE_PRESSURE: // https://it.wikipedia.org/wiki/Pressione_atmosferica
+                minf = 870;
+                maxf = 1085;
+                break;
+            case Sensor.TYPE_RELATIVE_HUMIDITY:
+                minf = 30;
+                maxf = 100;
+                break;
+            default:
+                minf = 0;
+                maxf = 0;
+                break;
+        }
+
+        value = random.nextFloat() * (maxf - minf) + minf;
 
         int index = Constants.getIndexAlarmForSensor(typeSensor);
 

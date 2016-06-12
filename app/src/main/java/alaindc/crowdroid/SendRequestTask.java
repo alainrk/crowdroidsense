@@ -29,11 +29,14 @@ public class SendRequestTask extends AsyncTask<Long, Void, SendRequestTask.Spitf
     private String bodytext;
     private Random random;
 
-    public SendRequestTask(CoapClient coapClient, IntentService intentService, String bodytext){
+    private int mCurrentSensorSending;
+
+    public SendRequestTask(CoapClient coapClient, IntentService intentService, String bodytext, int sensorType){
         this.coapClient = coapClient;
         this.bodytext = bodytext;
         this.intentService = intentService;
         this.random = new Random(System.currentTimeMillis());
+        this.mCurrentSensorSending = sensorType;
     }
 
     private BlockSize getBlock2Size() {
@@ -213,18 +216,27 @@ public class SendRequestTask extends AsyncTask<Long, Void, SendRequestTask.Spitf
 
         @Override
         public void processEmptyAcknowledgement(){
+            Log.d("","");
         }
 
         @Override
         public void processReset(){
+            Log.d("","");
         }
 
         @Override
         public void processTransmissionTimeout(){
+            Log.d("","");
+            // If timeout, re-queue an intent for sending
+            Intent resendIntent = new Intent(intentService.getApplicationContext(), SendIntentService.class);
+            resendIntent.setAction(Constants.ACTION_SENDDATA + mCurrentSensorSending);
+            resendIntent.putExtra(Constants.EXTRA_TYPE_OF_SENSOR_TO_SEND, mCurrentSensorSending); // TODO Here set to send all kind of sensor for start
+            intentService.getApplicationContext().startService(resendIntent);
         }
 
         @Override
         public void processResponseBlockReceived(final long receivedLength, final long expectedLength) {
+            Log.d("","");
         }
 
         @Override
@@ -234,6 +246,7 @@ public class SendRequestTask extends AsyncTask<Long, Void, SendRequestTask.Spitf
 
         @Override
         public void processMiscellaneousError(final String description) {
+            Log.d("","");
         }
 
         public void cancelObservation(){

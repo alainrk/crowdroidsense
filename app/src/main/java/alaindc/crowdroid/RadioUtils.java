@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.telephony.SignalStrength;
 import android.telephony.TelephonyManager;
 
 /**
@@ -20,7 +21,7 @@ public class RadioUtils {
 
             String bssid = wifiInfo.getBSSID();
             String ssid = wifiInfo.getSSID();
-            String signalStrength = String.valueOf(sharedPref.getInt(Constants.PREF_SENSOR_+Constants.TYPE_TEL, 0));
+            String signalStrength = String.valueOf(wifiInfo.getRssi());
 
             return new String[]{bssid, ssid, signalStrength};
         } catch (Exception e) {

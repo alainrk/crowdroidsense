@@ -105,7 +105,7 @@ public class SendIntentService extends IntentService {
             return;
         }
 
-        SendRequestTask sendreq = new SendRequestTask(clientApplication, this, body);
+        SendRequestTask sendreq = new SendRequestTask(clientApplication, this, body, typeOfSensorToSend);
         ClientCallback clientCallback = sendreq.doInBackground(POST);
     }
 

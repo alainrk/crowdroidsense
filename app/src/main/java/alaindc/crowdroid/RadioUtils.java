@@ -16,11 +16,13 @@ public class RadioUtils {
             WifiManager wifiMan = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
             WifiInfo wifiInfo = wifiMan.getConnectionInfo();
 
+            SharedPreferences sharedPref = context.getSharedPreferences(Constants.PREF_FILE, Context.MODE_PRIVATE);
+
             String bssid = wifiInfo.getBSSID();
             String ssid = wifiInfo.getSSID();
-            String rssi = Integer.toString(wifiInfo.getRssi());
+            String signalStrength = String.valueOf(sharedPref.getInt(Constants.PREF_SENSOR_+Constants.TYPE_TEL, 0));
 
-            return new String[]{bssid, ssid, rssi};
+            return new String[]{bssid, ssid, signalStrength};
         } catch (Exception e) {
             return new String[]{"","",""};
         }

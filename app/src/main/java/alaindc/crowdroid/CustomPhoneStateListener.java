@@ -5,9 +5,11 @@ package alaindc.crowdroid;
  */
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.CellSignalStrengthWcdma;
 import android.telephony.PhoneStateListener;
 import android.telephony.SignalStrength;
@@ -45,5 +47,10 @@ public class CustomPhoneStateListener extends PhoneStateListener {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(Constants.PREF_SENSOR_+Constants.TYPE_TEL, Integer.toString(strength));
         editor.commit();
+
+        // Update view
+        Intent senseintent = new Intent(Constants.INTENT_UPDATE_SENSORS);
+        senseintent.putExtra(Constants.INTENT_RECEIVED_DATA_EXTRA_DATA, "Sensor " + Constants.getNameOfSensor(Constants.TYPE_TEL) + " value: " + Integer.toString(strength));
+        LocalBroadcastManager.getInstance(mContext).sendBroadcast(senseintent);
     }
 }

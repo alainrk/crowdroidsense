@@ -78,7 +78,7 @@ public class Constants {
             case TYPE_WIFI:
                 return "SENSOR_WIFI";
             case TYPE_TEL:
-                return "SENSOR_WIFI";
+                    return "SENSOR_TELEPHONE";
             default:
                 return "SENSOR_UNKNOWN";
         }

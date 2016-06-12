@@ -1,9 +1,11 @@
 package alaindc.crowdroid;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.SignalStrength;
 import android.telephony.TelephonyManager;
 
@@ -20,6 +22,11 @@ public class RadioUtils {
             String bssid = wifiInfo.getBSSID();
             String ssid = wifiInfo.getSSID();
             String signalStrength = String.valueOf(wifiInfo.getRssi());
+
+            // Update view
+            Intent senseintent = new Intent(Constants.INTENT_UPDATE_SENSORS);
+            senseintent.putExtra(Constants.INTENT_RECEIVED_DATA_EXTRA_DATA, ssid + " " + signalStrength);
+            LocalBroadcastManager.getInstance(context).sendBroadcast(senseintent);
 
             return new String[]{bssid, ssid, signalStrength};
         } catch (Exception e) {

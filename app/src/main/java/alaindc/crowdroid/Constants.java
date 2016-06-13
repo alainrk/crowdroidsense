@@ -40,7 +40,10 @@ public class Constants {
     }
 
     public static final int MONITORED_SENSORS_REAL[] = {
-            Sensor.TYPE_LIGHT
+            Sensor.TYPE_LIGHT,
+            Sensor.TYPE_AMBIENT_TEMPERATURE,
+            Sensor.TYPE_RELATIVE_HUMIDITY,
+            Sensor.TYPE_PRESSURE
     };
 
     public static final int TYPE_AMPLITUDE = 100;

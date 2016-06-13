@@ -46,11 +46,11 @@ public class SensorsIntentService extends IntentService implements SensorEventLi
                 mSensorManager = (SensorManager) getApplicationContext().getSystemService(Context.SENSOR_SERVICE);
                 List<Sensor> sensorList = mSensorManager.getSensorList(Sensor.TYPE_ALL);
                 for (Sensor sensor : sensorList) {
-                    // TODO Create structures for sending, timeout etc.
                     if (Constants.isInMonitoredSensors(sensor.getType()))
                         mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
                 }
 
+                // TODO STUB: Comment this in release
                 for (int type: Constants.STUBBED_MONITORED_SENSORS) {
                     stub_onSensorChanged(type);
                 }

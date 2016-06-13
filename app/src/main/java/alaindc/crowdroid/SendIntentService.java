@@ -106,6 +106,7 @@ public class SendIntentService extends IntentService {
             body = jsonArr.toString();
 
         } catch (JSONException e) {
+            // TODO: Error in create JSON, retransmit for this specific sensor in the future
             return;
         }
 
@@ -139,6 +140,7 @@ public class SendIntentService extends IntentService {
             longitude = jsonObject.getDouble("long");
 
         } catch (JSONException e) {
+            // TODO: Foolish server, retransmit for this specific sensor in the future
             return;
         }
 

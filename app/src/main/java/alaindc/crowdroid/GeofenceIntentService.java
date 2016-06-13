@@ -25,6 +25,7 @@ import java.util.ArrayList;
 public class GeofenceIntentService extends IntentService implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status> {
 
+    private Intent currentIntent;
 
     // For Geofencing
     protected static final String TAG = "NeverSleepService";
@@ -43,16 +44,8 @@ public class GeofenceIntentService extends IntentService implements GoogleApiCli
             mGoogleApiClient.connect();
         }
 
-        // Retrieve an instance of the SharedPreferences object.
-        mSharedPreferences = getSharedPreferences(Constants.PREF_FILE, MODE_PRIVATE);
-        mGeofencesAdded = mSharedPreferences.getBoolean(Constants.GEOFENCES_ADDED_KEY, false);
+        currentIntent = intent;
 
-        int sensorType = intent.getIntExtra(Constants.EXTRA_GEOFENCE_SENSORTYPE, -1);
-        double latitude = intent.getDoubleExtra(Constants.EXTRA_GEOFENCE_LATITUDE, 44);
-        double longitude = intent.getDoubleExtra(Constants.EXTRA_GEOFENCE_LONGITUDE, 11);
-        float radius = Float.parseFloat(intent.getStringExtra(Constants.EXTRA_GEOFENCE_RADIUS));
-
-        addSensorGeofence(sensorType, radius, latitude, longitude);
         Log.d("","");
     }
 
@@ -96,8 +89,8 @@ public class GeofenceIntentService extends IntentService implements GoogleApiCli
                         radius
                 )
                 .setExpirationDuration(Constants.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
-                .setLoiteringDelay(30)
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_DWELL|Geofence.GEOFENCE_TRANSITION_EXIT|Geofence.GEOFENCE_TRANSITION_ENTER)
+                .setLoiteringDelay(3000)
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_EXIT)
                 .build());
         try {
             LocationServices.GeofencingApi.addGeofences(
@@ -108,6 +101,7 @@ public class GeofenceIntentService extends IntentService implements GoogleApiCli
 
             // Update view sending a broadcast intent
             Intent intent = new Intent(Constants.INTENT_UPDATE_GEOFENCEVIEW);
+            intent.putExtra(Constants.INTENT_GEOFENCEEXTRA_SENSOR, sensorType);
             intent.putExtra(Constants.INTENT_GEOFENCEEXTRA_LATITUDE, latitude);
             intent.putExtra(Constants.INTENT_GEOFENCEEXTRA_LONGITUDE, longitude);
             intent.putExtra(Constants.INTENT_GEOFENCEEXTRA_RADIUS, radius);
@@ -163,6 +157,17 @@ public class GeofenceIntentService extends IntentService implements GoogleApiCli
     @Override
     public void onConnected(Bundle connectionHint) {
         Log.i(TAG, "Connected to GoogleApiClient");
+
+        // Retrieve an instance of the SharedPreferences object.
+        mSharedPreferences = getSharedPreferences(Constants.PREF_FILE, MODE_PRIVATE);
+        mGeofencesAdded = mSharedPreferences.getBoolean(Constants.GEOFENCES_ADDED_KEY, false);
+
+        int sensorType = currentIntent.getIntExtra(Constants.EXTRA_GEOFENCE_SENSORTYPE, -1);
+        double latitude = currentIntent.getDoubleExtra(Constants.EXTRA_GEOFENCE_LATITUDE, 44);
+        double longitude = currentIntent.getDoubleExtra(Constants.EXTRA_GEOFENCE_LONGITUDE, 11);
+        float radius = Float.parseFloat(currentIntent.getStringExtra(Constants.EXTRA_GEOFENCE_RADIUS));
+
+        addSensorGeofence(sensorType, radius, latitude, longitude);
     }
 
     @Override

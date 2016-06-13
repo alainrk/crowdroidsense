@@ -28,6 +28,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GoogleMap mMap;
 
     private HashMap<Integer, GeofenceCirceView> listGeofenceCircle;
+    private HashMap<Integer, Circle> listCircles;
 
     private class GeofenceCirceView {
         public LatLng latLng;
@@ -60,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_main);
 
         listGeofenceCircle = new HashMap<>();
+        listCircles = new HashMap<>();
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -188,6 +191,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         );
 
         for (int k: listGeofenceCircle.keySet()){
+            try{
+                listCircles.get(k).remove();
+            } catch (Exception e){
+                Log.d("Main","No circle");
+            }
             GeofenceCirceView circle = listGeofenceCircle.get(k);
             CircleOptions circleOptions = new CircleOptions()
                     .center(circle.latLng)
@@ -197,7 +205,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     .radius(circle.radius); // In meters
 
             // Get back the mutable Circle
-            mMap.addCircle(circleOptions);
+            Circle c = mMap.addCircle(circleOptions);
+            listCircles.put(k, c);
         }
 
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(target, cameraZoom);

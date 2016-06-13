@@ -11,11 +11,13 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -26,8 +28,11 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.HashMap;
 
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -38,10 +43,23 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private TextView textView;
     private GoogleMap mMap;
 
+    private HashMap<Integer, GeofenceCirceView> listGeofenceCircle;
+
+    private class GeofenceCirceView {
+        public LatLng latLng;
+        public float radius;
+        public GeofenceCirceView(LatLng latLng, float radius) {
+            this.latLng = latLng;
+            this.radius = radius;
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        listGeofenceCircle = new HashMap<>();
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -112,6 +130,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     String response = intent.getStringExtra(Constants.INTENT_RECEIVED_DATA_EXTRA_DATA);
                     if (response != null && sensorsCheckbox.isChecked())
                         textView.append(response+"\n");
+                } else if (intent.getAction().equals(Constants.INTENT_UPDATE_GEOFENCEVIEW)) { // Geofencing
+                    addGeofenceView(intent.getIntExtra(Constants.INTENT_GEOFENCEEXTRA_SENSOR, 0),
+                            intent.getDoubleExtra(Constants.INTENT_GEOFENCEEXTRA_LATITUDE, 0),
+                            intent.getDoubleExtra(Constants.INTENT_GEOFENCEEXTRA_LONGITUDE, 0),
+                            intent.getFloatExtra(Constants.INTENT_GEOFENCEEXTRA_RADIUS, 100));
+                } else {
+                    Log.d("","");
                 }
             }
         };
@@ -119,9 +144,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         IntentFilter rcvDataIntFilter = new IntentFilter(Constants.INTENT_RECEIVED_DATA);
         IntentFilter updatePosIntFilter = new IntentFilter(Constants.INTENT_UPDATE_POS);
         IntentFilter updateSenseIntFilter = new IntentFilter(Constants.INTENT_UPDATE_SENSORS);
+        IntentFilter updateGeofenceViewIntFilter = new IntentFilter(Constants.INTENT_UPDATE_GEOFENCEVIEW);
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, rcvDataIntFilter);
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, updatePosIntFilter);
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, updateSenseIntFilter);
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, updateGeofenceViewIntFilter);
 
     }
 
@@ -160,19 +187,27 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .title("")
         );
 
-//        CircleOptions circleOptions = new CircleOptions()
-//                .center(target)
-//                .strokeWidth(7)
-//                .fillColor(Color.argb( 60,238, 32, 32))
-//                .strokeColor(Color.argb( 255,238, 32, 32))
-//                .radius(10); // In meters
+        for (int k: listGeofenceCircle.keySet()){
+            GeofenceCirceView circle = listGeofenceCircle.get(k);
+            CircleOptions circleOptions = new CircleOptions()
+                    .center(circle.latLng)
+                    .strokeWidth(7)
+                    .fillColor(Color.argb(60, 255, 255, 255))
+                    .strokeColor(Color.argb(80, 255, 255, 255))
+                    .radius(circle.radius); // In meters
 
-        // Get back the mutable Circle
-//        mMap.addCircle(circleOptions);
+            // Get back the mutable Circle
+            mMap.addCircle(circleOptions);
+        }
 
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(target, cameraZoom);
         mMap.animateCamera(cameraUpdate);
         mMap.setMyLocationEnabled(true);
+    }
+
+    private void addGeofenceView(int sensortype, double latitude, double longitude, float radius) {
+        listGeofenceCircle.put(sensortype, new GeofenceCirceView(new LatLng(latitude, longitude), radius));
+        setLocationAndMap();
     }
 
 }

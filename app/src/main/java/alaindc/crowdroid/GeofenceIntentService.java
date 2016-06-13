@@ -9,6 +9,7 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -104,6 +105,14 @@ public class GeofenceIntentService extends IntentService implements GoogleApiCli
                     getGeofencingRequest(geofenceList),
                     getGeofencePendingIntent(sensorType)
             ).setResultCallback(this); // Result processed in onResult().
+
+            // Update view sending a broadcast intent
+            Intent intent = new Intent(Constants.INTENT_UPDATE_GEOFENCEVIEW);
+            intent.putExtra(Constants.INTENT_GEOFENCEEXTRA_LATITUDE, latitude);
+            intent.putExtra(Constants.INTENT_GEOFENCEEXTRA_LONGITUDE, longitude);
+            intent.putExtra(Constants.INTENT_GEOFENCEEXTRA_RADIUS, radius);
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+
         } catch (SecurityException securityException) {
             logSecurityException(securityException);
         }

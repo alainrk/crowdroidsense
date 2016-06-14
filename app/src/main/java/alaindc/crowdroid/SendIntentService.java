@@ -74,6 +74,7 @@ public class SendIntentService extends IntentService {
 
         String sharedPreftypeSensor = Constants.PREF_SENSOR_+typeOfSensorToSend;
         String nameOfSensor = Constants.getNameOfSensor(typeOfSensorToSend);
+        String units = Constants.getUnitsOfSensor(typeOfSensorToSend);
 
         Long tsLong = System.currentTimeMillis();
         String timestamp = tsLong.toString();
@@ -100,6 +101,7 @@ public class SendIntentService extends IntentService {
             jsonObj.put("long", longitude);
             jsonObj.put("sensor", typeOfSensorToSend);
             jsonObj.put("value", sensordata);
+            jsonObj.put("units", units);
 
             JSONArray jsonArr = new JSONArray();
             jsonArr.put(jsonObj);

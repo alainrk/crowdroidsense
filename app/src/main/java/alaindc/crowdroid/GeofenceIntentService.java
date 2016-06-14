@@ -91,6 +91,7 @@ public class GeofenceIntentService extends IntentService implements GoogleApiCli
                 .setExpirationDuration(timeout)
                 .setLoiteringDelay(3000)
                 .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_EXIT)
+//                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_DWELL) // DEBUG
                 .build());
         try {
             LocationServices.GeofencingApi.addGeofences(

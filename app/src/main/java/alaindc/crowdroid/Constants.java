@@ -87,6 +87,29 @@ public class Constants {
         }
     }
 
+    // https://developer.android.com/reference/android/hardware/SensorEvent.html
+    // https://developer.android.com/reference/android/media/MediaRecorder.html#getMaxAmplitude()
+    public static String getUnitsOfSensor (int type) {
+        switch (type) {
+            case Sensor.TYPE_LIGHT:
+                return "lux";
+            case Sensor.TYPE_AMBIENT_TEMPERATURE:
+                return "°C";
+            case Sensor.TYPE_RELATIVE_HUMIDITY:
+                return "%";
+            case Sensor.TYPE_PRESSURE:
+                return "hPa";
+            case TYPE_AMPLITUDE:
+                return "abs";
+            case TYPE_WIFI:
+                return "dB";
+            case TYPE_TEL:
+                return "dB";
+            default:
+                return "unknown";
+        }
+    }
+
     // To keep alarms after receiving values from server
     public static int getIndexAlarmForSensor (int type) {
         switch (type) {

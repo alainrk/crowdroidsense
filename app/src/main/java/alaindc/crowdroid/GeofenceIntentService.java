@@ -74,7 +74,7 @@ public class GeofenceIntentService extends IntentService implements GoogleApiCli
         return builder.build();
     }
 
-    public void addSensorGeofence(int sensorType, float radius, double latitude, double longitude) {
+    public void addSensorGeofence(int sensorType, float radius, double latitude, double longitude, long timeout) {
         if (!mGoogleApiClient.isConnected()) {
             return;
         }
@@ -88,7 +88,7 @@ public class GeofenceIntentService extends IntentService implements GoogleApiCli
                         longitude,
                         radius
                 )
-                .setExpirationDuration(Constants.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
+                .setExpirationDuration(timeout)
                 .setLoiteringDelay(3000)
                 .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_EXIT)
                 .build());
@@ -166,8 +166,9 @@ public class GeofenceIntentService extends IntentService implements GoogleApiCli
         double latitude = currentIntent.getDoubleExtra(Constants.EXTRA_GEOFENCE_LATITUDE, 44);
         double longitude = currentIntent.getDoubleExtra(Constants.EXTRA_GEOFENCE_LONGITUDE, 11);
         float radius = Float.parseFloat(currentIntent.getStringExtra(Constants.EXTRA_GEOFENCE_RADIUS));
+        long timeout = Long.parseLong(currentIntent.getStringExtra(Constants.EXTRA_GEOFENCE_EXPIRE_MILLISEC));
 
-        addSensorGeofence(sensorType, radius, latitude, longitude);
+        addSensorGeofence(sensorType, radius, latitude, longitude, timeout);
     }
 
     @Override

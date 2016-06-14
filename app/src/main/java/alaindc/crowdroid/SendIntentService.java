@@ -150,6 +150,7 @@ public class SendIntentService extends IntentService {
         geofenceIntent.putExtra(Constants.EXTRA_GEOFENCE_LATITUDE, latitude);
         geofenceIntent.putExtra(Constants.EXTRA_GEOFENCE_LONGITUDE, longitude);
         geofenceIntent.putExtra(Constants.EXTRA_GEOFENCE_RADIUS, String.valueOf(radius));
+        geofenceIntent.putExtra(Constants.EXTRA_GEOFENCE_EXPIRE_MILLISEC, String.valueOf(timeout*1000));
         getApplicationContext().startService(geofenceIntent);
 
         // Set timeout based on server response

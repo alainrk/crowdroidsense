@@ -9,8 +9,8 @@ import com.google.android.gms.location.GeofenceStatusCodes;
  */
 public class Constants {
 
-    public static final String SERVER_ADDR = "melot.cs.unibo.it";
-//    public static final String SERVER_ADDR = "192.168.1.118";
+//    public static final String SERVER_ADDR = "melot.cs.unibo.it";
+    public static final String SERVER_ADDR = "192.168.1.118";
     public static final int SERVER_PORT = 5683;
     public static final String SERVER_LOCAL_URI = "/myresp";
 
@@ -142,6 +142,7 @@ public class Constants {
     public static String EXTRA_GEOFENCE_LATITUDE = "EXTRA_GEOFENCE_LATITUDE";
     public static String EXTRA_GEOFENCE_LONGITUDE = "EXTRA_GEOFENCE_LONGITUDE";
     public static String EXTRA_GEOFENCE_RADIUS = "EXTRA_GEOFENCE_RADIUS";
+    public static String EXTRA_GEOFENCE_EXPIRE_MILLISEC = "EXTRA_GEOFENCE_EXPIRE_MILLISEC";
 
     public static String INTENT_UPDATE_GEOFENCEVIEW = "INTENT_UPDATE_GEOFENCEVIEW";
     public static String INTENT_GEOFENCEEXTRA_SENSOR = "INTENT_GEOFENCEEXTRA_SENSOR";

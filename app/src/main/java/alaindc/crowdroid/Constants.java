@@ -9,8 +9,8 @@ import com.google.android.gms.location.GeofenceStatusCodes;
  */
 public class Constants {
 
-//    public static final String SERVER_ADDR = "melot.cs.unibo.it";
-    public static final String SERVER_ADDR = "192.168.1.118";
+    public static final String SERVER_ADDR = "melot.cs.unibo.it";
+//    public static final String SERVER_ADDR = "192.168.1.118";
     public static final int SERVER_PORT = 5683;
     public static final String SERVER_LOCAL_URI = "/myresp";
 

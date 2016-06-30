@@ -46,6 +46,7 @@ import alaindc.crowdroid.SensorsIntentService;
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
     private Button requestButton;
     private Button sensorButton;
+    private Button settingsButton;
     private CheckBox sensorsCheckbox;
     private CheckBox requestsCheckbox;
     private TextView textView;
@@ -80,6 +81,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         sensorsCheckbox = (CheckBox) findViewById(R.id.sensorscheck);
         requestsCheckbox = (CheckBox) findViewById(R.id.requestscheck);
+
+        this.settingsButton = (Button) findViewById(R.id.settbutton);
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), StakeholdersActivity.class);
+                startActivity(i);
+            }
+        });
 
         this.requestButton = (Button) findViewById(R.id.button);
         requestButton.setOnClickListener(new View.OnClickListener() {

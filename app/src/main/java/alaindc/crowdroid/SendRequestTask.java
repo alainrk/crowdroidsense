@@ -88,7 +88,7 @@ public class SendRequestTask extends AsyncTask<Long, Void, SendRequestTask.Spitf
 
         serverName = Constants.SERVER_ADDR;
         portNumber = Constants.SERVER_PORT;
-        localUri = Constants.SERVER_LOCAL_URI;
+        localUri = Constants.SERVER_SENSINGSEND_URI;
         confirmable = true;
         observe = false;
         acceptedFormats = "";

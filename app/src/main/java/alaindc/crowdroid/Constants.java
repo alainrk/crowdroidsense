@@ -12,7 +12,9 @@ public class Constants {
     public static final String SERVER_ADDR = "melot.cs.unibo.it";
 //    public static final String SERVER_ADDR = "192.168.1.118";
     public static final int SERVER_PORT = 5683;
-    public static final String SERVER_LOCAL_URI = "/myresp";
+    public static final String SERVER_SENSINGSEND_URI = "/sensing_send";
+    public static final String SERVER_GETSUBSCRIPTION_URI = "/get_subscriptions";
+    public static final String SERVER_UPDATESUBSCRIPTION_URI = "/update_subscriptions";
 
     public static final String PACKAGE_NAME_ACT = "com.google.android.gms.location.activityrecognition";
 

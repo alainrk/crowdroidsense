@@ -1,4 +1,4 @@
-package alaindc.crowdroid;
+package alaindc.crowdroid.View;
 
 /**
  * Created by alain on 06/06/16.
@@ -34,6 +34,13 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.HashMap;
+
+import alaindc.crowdroid.Constants;
+import alaindc.crowdroid.NeverSleepService;
+import alaindc.crowdroid.PositionIntentService;
+import alaindc.crowdroid.R;
+import alaindc.crowdroid.SendIntentService;
+import alaindc.crowdroid.SensorsIntentService;
 
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {

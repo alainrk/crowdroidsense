@@ -93,7 +93,10 @@ public class SendIntentService extends IntentService {
     }
 
     private void handleActionReceivedSubscriptions(String response) {
-        // TODO Send to the activity the subscription obtained
+        // Update view sending a broadcast intent
+        Intent intent = new Intent(Constants.INTENTVIEW_RECEIVED_SUBSCRIPTION);
+        intent.putExtra(Constants.EXTRAVIEW_RECEIVED_SUBSCRIPTION, response);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
     // TODO REMOVEME Debug purpose
@@ -173,11 +176,9 @@ public class SendIntentService extends IntentService {
             longitude = jsonObject.getDouble("long");
 
         } catch (JSONException e) {
-            // TODO: Foolish server, retransmit for this specific sensor in the future
             return;
         }
 
-        // TODO Set geofence based on server response
         Intent geofenceIntent = new Intent(getApplicationContext(), GeofenceIntentService.class);
         geofenceIntent.putExtra(Constants.EXTRA_GEOFENCE_SENSORTYPE, sensor);
         geofenceIntent.putExtra(Constants.EXTRA_GEOFENCE_LATITUDE, latitude);

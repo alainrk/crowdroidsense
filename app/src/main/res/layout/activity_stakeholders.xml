@@ -7,14 +7,19 @@ tools:context=".View.StakeholdersActivity"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:orientation="vertical"
-android:weightSum="2">
+android:weightSum="1">
 
     <LinearLayout
+        android:id="@+id/subscribesLinearLayout"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="390dp"
         android:layout_gravity="center_horizontal"
+        android:paddingTop="10dp"
+        android:layout_weight="0.9"
+        android:textAlignment="center"
         android:weightSum="1">
+
 
     </LinearLayout>
 
@@ -22,7 +27,9 @@ android:weightSum="2">
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
+        android:layout_gravity="bottom"
+        android:layout_weight="0.1"
+        android:gravity="bottom"
         android:weightSum="1">
 
         <Button

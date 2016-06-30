@@ -4,6 +4,8 @@ import android.hardware.Sensor;
 
 import com.google.android.gms.location.GeofenceStatusCodes;
 
+import de.uzl.itm.ncoap.application.client.CoapClient;
+
 /**
  * Created by alain on 07/06/16.
  */
@@ -12,6 +14,8 @@ public class Constants {
     public static final String SERVER_ADDR = "melot.cs.unibo.it";
 //    public static final String SERVER_ADDR = "192.168.1.118";
     public static final int SERVER_PORT = 5683;
+    public static long POST = 2;
+
     public static final String SERVER_SENSINGSEND_URI = "/sensing_send";
     public static final String SERVER_GETSUBSCRIPTION_URI = "/get_subscriptions";
     public static final String SERVER_UPDATESUBSCRIPTION_URI = "/update_subscriptions";
@@ -143,7 +147,7 @@ public class Constants {
 
     public static String ACTION_SENDDATA = "ACTION_SENDDATA";
     public static String ACTION_RECEIVEDDATA = "ACTION_RECEIVEDDATA";
-    public static String EXTRA_RESPONSE = "EXTRA_RESPONSE";
+    public static String EXTRA_SENSE_RESPONSE = "EXTRA_SENSE_RESPONSE";
 
     public static String EXTRA_TYPE_OF_SENSOR_TO_SEND = "EXTRA_TYPE_OF_SENSOR_TO_SEND";
 
@@ -174,6 +178,13 @@ public class Constants {
     public static String INTENT_GEOFENCEEXTRA_LATITUDE = "INTENT_GEOFENCEEXTRA_LATITUDE";
     public static String INTENT_GEOFENCEEXTRA_LONGITUDE = "INTENT_GEOFENCEEXTRA_LONGITUDE";
     public static String INTENT_GEOFENCEEXTRA_RADIUS = "INTENT_GEOFENCEEXTRA_RADIUS";
+
+    public static String ACTION_GETSUBSCRIPTION = "ACTION_GETSUBSCRIPTION";
+    public static String EXTRA_BODY_GETSUBSCRIPTION = "EXTRA_BODY_GETSUBSCRIPTION";
+    public static String ACTION_UPDATESUBSCRIPTION = "ACTION_UPDATESUBSCRIPTION";
+    public static String EXTRA_BODY_UPDATESUBSCRIPTION = "EXTRA_BODY_UPDATESUBSCRIPTION";
+    public static String ACTION_RECEIVEDSUBSCRIPTION = "ACTION_RECEIVEDSUBSCRIPTION";
+    public static String EXTRA_SUBSCRIPTION_RESPONSE = "EXTRA_SUBSCRIPTION_RESPONSE";
 
     public static final long GEOFENCE_EXPIRATION_IN_HOURS = 12;
     public static final long GEOFENCE_EXPIRATION_IN_MILLISECONDS =

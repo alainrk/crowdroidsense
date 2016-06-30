@@ -37,7 +37,6 @@ public class SendIntentService extends IntentService {
     private AlarmManager alarmMgr;
     private PendingIntent alarmIntent;
 
-    private static long POST = 2;
     private static CoapClient clientApplication;
 
     public SendIntentService() {
@@ -58,10 +57,43 @@ public class SendIntentService extends IntentService {
             if (action.startsWith(Constants.ACTION_SENDDATA)) {
                 handleActionSendData(intent.getIntExtra(Constants.EXTRA_TYPE_OF_SENSOR_TO_SEND, -1)); // Name in shared preference
             } else if (action.startsWith(Constants.ACTION_RECEIVEDDATA)) {
-                final String response = intent.getStringExtra(Constants.EXTRA_RESPONSE);
+                final String response = intent.getStringExtra(Constants.EXTRA_SENSE_RESPONSE);
                 handleActionReceivedData(response);
+            } else if (action.startsWith(Constants.ACTION_GETSUBSCRIPTION)) {
+                handleActionGetSubscriptions();
+            } else if (action.startsWith(Constants.ACTION_UPDATESUBSCRIPTION)) {
+                handleActionUpdateSubscriptions(intent.getStringExtra(Constants.EXTRA_BODY_UPDATESUBSCRIPTION));
+            } else if (action.startsWith(Constants.ACTION_RECEIVEDSUBSCRIPTION)) {
+                handleActionReceivedSubscriptions(intent.getStringExtra(Constants.EXTRA_SUBSCRIPTION_RESPONSE));
             }
         }
+    }
+
+    private void handleActionGetSubscriptions() {
+        String body;
+        try {
+            // Here we convert Java Object to JSON
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.put("user", RadioUtils.getMyDeviceId(this));
+            JSONArray jsonArr = new JSONArray();
+            jsonArr.put(jsonObj);
+            body = jsonArr.toString();
+
+        } catch (JSONException e) {
+            return;
+        }
+
+        SendRequestTask sendreq = new SendRequestTask(clientApplication, this, body, Constants.SERVER_GETSUBSCRIPTION_URI);
+        ClientCallback clientCallback = sendreq.doInBackground(Constants.POST);
+    }
+
+    private void handleActionUpdateSubscriptions(String body) {
+        SendRequestTask sendreq = new SendRequestTask(clientApplication, this, body, Constants.SERVER_UPDATESUBSCRIPTION_URI);
+        ClientCallback clientCallback = sendreq.doInBackground(Constants.POST);
+    }
+
+    private void handleActionReceivedSubscriptions(String response) {
+        // TODO Send to the activity the subscription obtained
     }
 
     // TODO REMOVEME Debug purpose
@@ -108,12 +140,11 @@ public class SendIntentService extends IntentService {
             body = jsonArr.toString();
 
         } catch (JSONException e) {
-            // TODO: Error in create JSON, retransmit for this specific sensor in the future
             return;
         }
 
-        SendRequestTask sendreq = new SendRequestTask(clientApplication, this, body, typeOfSensorToSend);
-        ClientCallback clientCallback = sendreq.doInBackground(POST);
+        SendRequestTask sendreq = new SendRequestTask(clientApplication, this, body, typeOfSensorToSend, Constants.SERVER_SENSINGSEND_URI);
+        ClientCallback clientCallback = sendreq.doInBackground(Constants.POST);
     }
 
     private void handleActionReceivedData(String response) {

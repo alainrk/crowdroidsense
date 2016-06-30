@@ -28,15 +28,25 @@ public class SendRequestTask extends AsyncTask<Long, Void, SendRequestTask.Spitf
     private IntentService intentService;
     private String bodytext;
     private Random random;
+    private String requestUri;
 
     private int mCurrentSensorSending;
 
-    public SendRequestTask(CoapClient coapClient, IntentService intentService, String bodytext, int sensorType){
+    public SendRequestTask(CoapClient coapClient, IntentService intentService, String bodytext, int sensorType, String requestUri){
         this.coapClient = coapClient;
         this.bodytext = bodytext;
         this.intentService = intentService;
         this.random = new Random(System.currentTimeMillis());
         this.mCurrentSensorSending = sensorType;
+        this.requestUri = requestUri;
+    }
+
+    public SendRequestTask(CoapClient coapClient, IntentService intentService, String bodytext, String requestUri){
+        this.coapClient = coapClient;
+        this.bodytext = bodytext;
+        this.intentService = intentService;
+        this.random = new Random(System.currentTimeMillis());
+        this.requestUri = requestUri;
     }
 
     private BlockSize getBlock2Size() {
@@ -81,14 +91,13 @@ public class SendRequestTask extends AsyncTask<Long, Void, SendRequestTask.Spitf
     @Override
     protected SpitfirefoxCallback doInBackground(Long... method){
 
-        String serverName, localUri, acceptedFormats, payloadFormat, payload, ifMatch, etags;
+        String serverName, acceptedFormats, payloadFormat, payload, ifMatch, etags;
         int portNumber;
         boolean confirmable, observe;
         BlockSize block1Size, block2Size;
 
         serverName = Constants.SERVER_ADDR;
         portNumber = Constants.SERVER_PORT;
-        localUri = Constants.SERVER_SENSINGSEND_URI;
         confirmable = true;
         observe = false;
         acceptedFormats = "";
@@ -110,7 +119,7 @@ public class SendRequestTask extends AsyncTask<Long, Void, SendRequestTask.Spitf
             int messageType = (confirmable) ? MessageType.CON : MessageType.NON;
 
             //Create URI from server name, port and service path (and query)
-            URI serviceURI = new URI("coap", null, serverName, remoteEndpoint.getPort(), localUri, null, null);
+            URI serviceURI = new URI("coap", null, serverName, remoteEndpoint.getPort(), requestUri, null, null);
 
             //Create initial CoAP request
             CoapRequest coapRequest = new CoapRequest(messageType, method[0].intValue(), serviceURI);
@@ -197,21 +206,28 @@ public class SendRequestTask extends AsyncTask<Long, Void, SendRequestTask.Spitf
         public void processCoapResponse(CoapResponse coapResponse) {
             long duration = System.currentTimeMillis() - startTime;
 
-            ///////////////////////  CHIAMATA FONDAMENTALE ///////////////////////
-            /////////////////////////////////////////////////////////////////////
+            if (requestUri.equals(Constants.SERVER_SENSINGSEND_URI)) {
+                String text = coapResponse.getContent().toString(CoapMessage.CHARSET);
 
-            String text = coapResponse.getContent().toString(CoapMessage.CHARSET);
-            Log.d("SENDREQUESTTASK",text);
+                int ran = random.nextInt(500000); // HACK To avoid action intentservice override
 
-            int ran = random.nextInt(500000); // HACK To avoid action intentservice override
+                Intent serviceIntent = new Intent(intentService.getApplicationContext(), SendIntentService.class);
+                serviceIntent.setAction(Constants.ACTION_RECEIVEDDATA+ran);
+                serviceIntent.putExtra(Constants.EXTRA_SENSE_RESPONSE, text);
+                intentService.getApplicationContext().startService(serviceIntent);
+            }
+            else if (requestUri.equals(Constants.SERVER_GETSUBSCRIPTION_URI)) {
+                String text = coapResponse.getContent().toString(CoapMessage.CHARSET);
 
-            Intent serviceIntent = new Intent(intentService.getApplicationContext(), SendIntentService.class);
-            serviceIntent.setAction(Constants.ACTION_RECEIVEDDATA+ran);
-            serviceIntent.putExtra(Constants.EXTRA_RESPONSE, text);
-            intentService.getApplicationContext().startService(serviceIntent);
+                Intent serviceIntent = new Intent(intentService.getApplicationContext(), SendIntentService.class);
+                serviceIntent.setAction(Constants.ACTION_RECEIVEDSUBSCRIPTION);
+                serviceIntent.putExtra(Constants.EXTRA_SUBSCRIPTION_RESPONSE, text);
+                intentService.getApplicationContext().startService(serviceIntent);
+            }
+            else if (requestUri.equals(Constants.SERVER_UPDATESUBSCRIPTION_URI)) {
+                return; // TODO Give a feedback to user
+            }
 
-            /////////////////////////////////////////////////////////////////////
-            /////////////////////////////////////////////////////////////////////
         }
 
         @Override
@@ -226,12 +242,13 @@ public class SendRequestTask extends AsyncTask<Long, Void, SendRequestTask.Spitf
 
         @Override
         public void processTransmissionTimeout(){
-            Log.d("","");
-            // If timeout, re-queue an intent for sending
-            Intent resendIntent = new Intent(intentService.getApplicationContext(), SendIntentService.class);
-            resendIntent.setAction(Constants.ACTION_SENDDATA + mCurrentSensorSending);
-            resendIntent.putExtra(Constants.EXTRA_TYPE_OF_SENSOR_TO_SEND, mCurrentSensorSending); // TODO Here set to send all kind of sensor for start
-            intentService.getApplicationContext().startService(resendIntent);
+            if (requestUri.equals(Constants.SERVER_SENSINGSEND_URI)) {
+                // If timeout, re-queue an intent for sending
+                Intent resendIntent = new Intent(intentService.getApplicationContext(), SendIntentService.class);
+                resendIntent.setAction(Constants.ACTION_SENDDATA + mCurrentSensorSending);
+                resendIntent.putExtra(Constants.EXTRA_TYPE_OF_SENSOR_TO_SEND, mCurrentSensorSending); // TODO Here set to send all kind of sensor for start
+                intentService.getApplicationContext().startService(resendIntent);
+            }
         }
 
         @Override

@@ -10,40 +10,11 @@ android:orientation="vertical"
 android:weightSum="2">
 
     <LinearLayout
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:weightSum="1">
-
-        <RadioGroup
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/text"
-            android:id="@+id/myRadioGroup"
-            android:checkedButton="@+id/sound"
-            android:layout_gravity="center_horizontal">
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/test"
-                android:text="Aggiungi a runtime" />
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/test2"
-                android:text="Aggiungi a runtime" />
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:id="@+id/test3"
-                android:text="Aggiungi a runtime" />
-
-        </RadioGroup>
 
     </LinearLayout>
 

@@ -42,6 +42,12 @@ public class SensorsIntentService extends IntentService implements SensorEventLi
             final String action = intent.getAction();
             if (action.equals(Constants.INTENT_START_SENSORS)) {
 
+                // Init throughput taken
+                SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(Constants.PREF_FILE,Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putBoolean(Constants.THROUGHPUT_TAKEN, false);
+                editor.commit();
+
                 // Configure sensors and eventlistener
                 mSensorManager = (SensorManager) getApplicationContext().getSystemService(Context.SENSOR_SERVICE);
                 List<Sensor> sensorList = mSensorManager.getSensorList(Sensor.TYPE_ALL);
@@ -99,7 +105,7 @@ public class SensorsIntentService extends IntentService implements SensorEventLi
                 alarmIntent = PendingIntent.getService(getApplicationContext(), 0, intentAlarm, 0);
 
                 // TIMEOUT for another monitoring of audio
-                int seconds = 30;
+                int seconds = 30; // TODO: De-hardcode this
                 alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                         SystemClock.elapsedRealtime() +
                                 seconds * 1000, alarmIntent);

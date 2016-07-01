@@ -224,6 +224,12 @@ public class SendRequestTask extends AsyncTask<Long, Void, SendRequestTask.Spitf
                 serviceIntent.putExtra(Constants.EXTRA_SUBSCRIPTION_RESPONSE, text);
                 intentService.getApplicationContext().startService(serviceIntent);
             }
+            else if (requestUri.equals(Constants.SERVER_CALCTHROUGHPUT_URI)) {
+                Intent serviceIntent = new Intent(intentService.getApplicationContext(), SendIntentService.class);
+                serviceIntent.setAction(Constants.ACTION_RECEIVEDTHROUGHPUT);
+                serviceIntent.putExtra(Constants.EXTRA_THROUGHPUT_RESPONSE, duration);
+                intentService.getApplicationContext().startService(serviceIntent);
+            }
             else if (requestUri.equals(Constants.SERVER_UPDATESUBSCRIPTION_URI)) {
                 return; // TODO Give a feedback to user
             }

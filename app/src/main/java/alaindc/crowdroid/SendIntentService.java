@@ -65,8 +65,22 @@ public class SendIntentService extends IntentService {
                 handleActionUpdateSubscriptions(intent.getStringExtra(Constants.EXTRA_BODY_UPDATESUBSCRIPTION));
             } else if (action.startsWith(Constants.ACTION_RECEIVEDSUBSCRIPTION)) {
                 handleActionReceivedSubscriptions(intent.getStringExtra(Constants.EXTRA_SUBSCRIPTION_RESPONSE));
+            } else if (action.startsWith(Constants.ACTION_RECEIVEDTHROUGHPUT)) {
+                handleActionReceivedThroughput(intent.getLongExtra(Constants.EXTRA_THROUGHPUT_RESPONSE, -1));
             }
         }
+    }
+
+    private void handleActionReceivedThroughput(long mstime) {
+        float throughput = (mstime > 0) ? 1000*Constants.ESTIMATE_BYTE_EXCHANGE/(mstime) : 0;
+
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(Constants.PREF_FILE, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putFloat(Constants.THROUGHPUT_VALUE, throughput);
+        editor.putBoolean(Constants.THROUGHPUT_TAKEN, true);
+        editor.commit();
+
+        handleActionSendData(Constants.TYPE_TEL);
     }
 
     private void handleActionGetSubscriptions() {
@@ -104,6 +118,15 @@ public class SendIntentService extends IntentService {
         if (typeOfSensorToSend < 0)
             return;
 
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(Constants.PREF_FILE,Context.MODE_PRIVATE);
+
+        // Hack to get the throughput
+        if (typeOfSensorToSend == Constants.TYPE_TEL && !sharedPref.getBoolean(Constants.THROUGHPUT_TAKEN, false)){
+            SendRequestTask sendreq = new SendRequestTask(clientApplication, this, Constants.THROUGHPUT_STRING, Constants.SERVER_CALCTHROUGHPUT_URI);
+            ClientCallback clientCallback = sendreq.doInBackground(Constants.POST);
+            return;
+        }
+
         String body;
         String sensordata;
 
@@ -115,7 +138,6 @@ public class SendIntentService extends IntentService {
         String timestamp = tsLong.toString();
         //String date = getDate(tsLong);
 
-        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(Constants.PREF_FILE,Context.MODE_PRIVATE);
         String longitude = sharedPref.getString(Constants.PREF_LONGITUDE,"-1");
         String latitude = sharedPref.getString(Constants.PREF_LATITUDE,"-1");
 
@@ -177,6 +199,13 @@ public class SendIntentService extends IntentService {
 
         } catch (JSONException e) {
             return;
+        }
+
+        if (sensor == Constants.TYPE_TEL) {
+            SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(Constants.PREF_FILE, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putBoolean(Constants.THROUGHPUT_TAKEN, false);
+            editor.commit();
         }
 
         Intent geofenceIntent = new Intent(getApplicationContext(), GeofenceIntentService.class);

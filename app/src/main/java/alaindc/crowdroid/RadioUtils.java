@@ -44,8 +44,9 @@ public class RadioUtils {
 
         SharedPreferences sharedPref = context.getSharedPreferences(Constants.PREF_FILE,Context.MODE_PRIVATE);
         String signalStrength = sharedPref.getString(Constants.PREF_SENSOR_+Constants.TYPE_TEL,"0");
+        String throughput = String.valueOf(sharedPref.getFloat(Constants.THROUGHPUT_VALUE, 0));
 
-        return new String[]{netType,signalStrength,operatorName};
+        return new String[]{netType,signalStrength,operatorName,throughput};
     }
 
     public static String getNetClass(Context context) {

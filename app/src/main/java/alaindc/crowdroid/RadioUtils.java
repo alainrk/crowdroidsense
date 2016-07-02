@@ -3,6 +3,9 @@ package alaindc.crowdroid;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.support.v4.content.LocalBroadcastManager;
@@ -33,6 +36,12 @@ public class RadioUtils {
             return new String[]{"","",""};
         }
 
+    }
+
+    public static boolean ifWifiConnected(Context context) {
+        ConnectivityManager connectionManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo wifiCheck = connectionManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        return wifiCheck.isConnected();
     }
 
     public static String[] getTelInfo(Context context) {

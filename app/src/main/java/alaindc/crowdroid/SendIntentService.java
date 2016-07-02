@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.SystemClock;
+import android.provider.MediaStore;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
@@ -71,6 +72,7 @@ public class SendIntentService extends IntentService {
         }
     }
 
+    // mstime <= 0 called by handleActionSendData if connected with wifi
     private void handleActionReceivedThroughput(long mstime) {
         float throughput = (mstime > 0) ? 1000*Constants.ESTIMATE_BYTE_EXCHANGE/(mstime) : 0;
 
@@ -120,8 +122,12 @@ public class SendIntentService extends IntentService {
 
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(Constants.PREF_FILE,Context.MODE_PRIVATE);
 
-        // Hack to get the throughput
+        // Getting throughput
         if (typeOfSensorToSend == Constants.TYPE_TEL && !sharedPref.getBoolean(Constants.THROUGHPUT_TAKEN, false)){
+            if (RadioUtils.ifWifiConnected(getApplicationContext())) {
+                handleActionReceivedThroughput(-1);
+                return;
+            }
             SendRequestTask sendreq = new SendRequestTask(clientApplication, this, Constants.THROUGHPUT_STRING, Constants.SERVER_CALCTHROUGHPUT_URI);
             ClientCallback clientCallback = sendreq.doInBackground(Constants.POST);
             return;
